@@ -1,0 +1,58 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit RendezVous{% endblock %}
+
+{% block body %}
+    <h1>Edit RendezVous</h1>
+
+    {{ include('appointment_admin/_form.html.twig', {'button_label': 'Update'}) }}
+
+    <a href="{{ path('app_appointment_admin_index') }}">back to list</a>
+
+    {{ include('appointment_admin/_delete_form.html.twig') }}
+
+
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+
+   <script>
+
+  document.addEventListener('DOMContentLoaded', function() {
+    const joursOuverts = {{ openDays|json_encode|raw }};
+    console.log('Jours Ouverts:', joursOuverts);
+
+    function getDatesForOpenDays(openDays) {
+        const today = new Date();
+        const dates = [];
+
+        const dayMap = {
+            "dimanche": 0,
+            "lundi": 1,
+            "mardi": 2,
+            "mercredi": 3,
+            "jeudi": 4,
+            "vendredi": 5,
+            "samedi": 6
+        };
+
+        for (let i = 0; i < 365; i++) { 
+            const date = new Date(today);
+            date.setDate(today.getDate() + i);
+            const dayName = Object.keys(dayMap).find(key => dayMap[key] === date.getDay());
+            if (openDays.includes(dayName)) {
+                dates.push(date);
+            }
+        }
+
+        return dates;
+    }
+
+    const enabledDates = getDatesForOpenDays(joursOuverts);
+
+    flatpickr("#rendez_vous1_date_rdv", {
+        dateFormat: "Y-m-d",
+        enable: enabledDates
+    });
+});
+</script>
+{% endblock %}

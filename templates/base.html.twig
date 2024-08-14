@@ -1,17 +1,49 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="UTF-8">
-        <title>{% block title %}Welcome!{% endblock %}</title>
-        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
-        {% block stylesheets %}
-        {% endblock %}
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Welcome!{% endblock %}</title>
+    <link rel="stylesheet" href="{{ asset('styles/output.css') }}">
+    {% block stylesheets %}
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/5.10.1/main.min.css" rel="stylesheet">
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css" rel="stylesheet">
+    {% endblock %}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+</head>
+<body class="bg-white text-black min-h-screen flex flex-col">
+    {% if is_granted('ROLE_ADMIN') %}
+            {% include 'components/navbar_admin.html.twig' %}
+        {% else %}
+            {% include 'components/navbar_client.html.twig' %}
+        {% endif %}
+        
 
-        {% block javascripts %}
-            {% block importmap %}{{ importmap('app') }}{% endblock %}
-        {% endblock %}
-    </head>
-    <body>
+
+    <main class="flex-grow p-6">
         {% block body %}{% endblock %}
-    </body>
+    </main>
+
+    <footer class="bg-gray-200 p-4 mt-auto">
+        <!-- Footer content -->
+    </footer>
+
+    {% block javascripts %}
+        {% block importmap %}{{ importmap('app') }}{% endblock %}
+        <script src="{{ asset('dist/bundle.js') }}"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/5.10.1/main.min.js"></script>
+        <script>
+            function scrollCarousel(direction) {
+                const carousel = document.querySelector('.carousel');
+                const scrollAmount = 300; // Ajustez cette valeur selon vos besoins
+                carousel.scrollBy({
+                    top: 0,
+                    left: direction * scrollAmount,
+                    behavior: 'smooth'
+                });
+            }
+        </script>
+    {% endblock %}
+</body>
 </html>

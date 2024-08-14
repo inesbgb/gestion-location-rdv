@@ -1,0 +1,46 @@
+{{ form_start(form, {'attr': {'id': 'form_id'}}) }}
+    <div class="mb-4">
+        {{ form_label(form.designation, 'Désignation', {'label_attr': {'class': 'block text-gray-700 font-bold mb-2'}}) }}
+        {{ form_widget(form.designation, {'attr': {'class': 'shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline'}}) }}
+        {{ form_errors(form.designation) }}
+    </div>
+ <div class="mb-4">
+        {{ form_label(form.imageFile, 'Image', {'label_attr': {'class': 'block text-gray-700 font-bold mb-2'}}) }}
+        {{ form_widget(form.imageFile, {'attr': {'class': 'shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline'}}) }}
+        {{ form_errors(form.imageFile) }}
+    </div>
+    <div class="mb-4">
+        {{ form_label(form.liquidation, 'Liquidation', {'label_attr': {'class': 'block text-gray-700 font-bold mb-2 inline-flex items-center'}}) }}
+        {{ form_widget(form.liquidation, {'attr': {'class': 'mr-2 leading-tight'}}) }}
+        {{ form_errors(form.liquidation) }}
+    </div>
+    <div class="mb-4">
+        {{ form_label(form.description, 'Description', {'label_attr': {'class': 'block text-gray-700 font-bold mb-2'}}) }}
+        {{ form_widget(form.description, {'attr': {'class': 'shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline'}}) }}
+        {{ form_errors(form.description) }}
+    </div>
+   
+    <div class="mb-4">
+        {{ form_label(form.prix, 'Prix', {'label_attr': {'class': 'block text-gray-700 font-bold mb-2'}}) }}
+        {{ form_widget(form.prix, {'attr': {'class': 'shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline'}}) }}
+        {{ form_errors(form.prix) }}
+    </div>
+    <div class="mb-4">
+        {{ form_label(form.Actif, 'Actif', {'label_attr': {'class': 'block text-gray-700 font-bold mb-2 inline-flex items-center'}}) }}
+        {{ form_widget(form.Actif, {'attr': {'class': 'mr-2 leading-tight'}}) }}
+        {{ form_errors(form.Actif) }}
+    </div>
+    <div class="mb-4">
+        {{ form_label(form.taille, 'Taille', {'label_attr': {'class': 'block text-gray-700 font-bold mb-2'}}) }}
+        {{ form_widget(form.taille, {'attr': {'class': 'shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline'}}) }}
+        {{ form_errors(form.taille) }}
+    </div>
+    <div class="mb-4">
+        {{ form_label(form.categorie, 'Catégorie', {'label_attr': {'class': 'block text-gray-700 font-bold mb-2'}}) }}
+        {{ form_widget(form.categorie, {'attr': {'class': 'shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline'}}) }}
+        {{ form_errors(form.categorie) }}
+    </div>
+    <div class="text-center">
+        <button class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600" type="submit">{{ button_label|default('Enregistrer') }}</button>
+    </div>
+{{ form_end(form) }}

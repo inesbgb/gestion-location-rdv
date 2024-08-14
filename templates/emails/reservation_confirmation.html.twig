@@ -1,0 +1,19 @@
+<h1>Confirmation de votre réservation</h1>
+
+<p>Bonjour {{ reservation.client.prenom }} {{ reservation.client.nom }},</p>
+
+<p>Nous vous confirmons votre réservation pour la robe "{{ reservation.produit.designation }}".</p>
+
+<p>Détails de la réservation :</p>
+<ul>
+    <li>Date de début : {{ reservation.dateDebut|date('d/m/Y') }}</li>
+    <li>Date de fin : {{ reservation.dateFin|date('d/m/Y') }}</li>
+    {% if reservation.depot %}
+        <li>Type de dépôt : {{ reservation.depot.type }}</li>
+        <li>Montant du dépôt : {{ reservation.depot.montant }} €</li>
+    {% endif %}
+</ul>
+
+<p>Nous vous remercions pour votre confiance et restons à votre disposition pour toute question.</p>
+
+<p>Cordialement,<br>L'équipe CnK Couture</p>

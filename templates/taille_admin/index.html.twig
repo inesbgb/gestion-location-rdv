@@ -1,0 +1,40 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Taille index{% endblock %}
+
+{% block body %}
+    <h1 class="text-2xl font-bold mb-4 text-center">Taille index</h1>
+
+  
+
+    <div class="flex justify-center">
+        <div class="w-full max-w-lg">
+            <table class="min-w-full bg-white shadow-md rounded-lg overflow-hidden">
+                <thead class="bg-gray-800 text-white">
+                    <tr>
+                        <th class="py-2 px-4">Taille</th>
+                        <th class="py-2 px-4">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for taille in tailles %}
+                    <tr class="border-b">
+                        <td class="py-2 px-4">{{ taille.libel }}</td>
+                        <td class="py-2 px-4">
+                            <a href="{{ path('app_taille_admin_edit', {'id': taille.id}) }}" class="text-blue-500 hover:underline ml-2 ">Modifier</a>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="2" class="py-2 px-4 text-center text-gray-500">no records found</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+              <div class="flex justify-center mt-4 mb-4 space-x-2">
+        <a href="{{ path('app_produit_admin_index') }}" class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600">Retour à la gestion des robes</a>
+        <a href="{{ path('app_taille_admin_new') }}" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Ajouter une taille</a>
+    </div>
+        </div>        
+    </div>
+{% endblock %}

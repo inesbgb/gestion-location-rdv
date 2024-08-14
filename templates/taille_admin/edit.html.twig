@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier une Taille{% endblock %}
+
+{% block body %}
+    <h1 class="text-2xl font-bold mb-4 text-center">Modifier une Taille</h1>
+
+    <div class="flex justify-center">
+        <div class="bg-white shadow-md rounded-lg p-6 w-full max-w-md">
+            {{ include('taille_admin/_form.html.twig', {'button_label': 'Enregistrer'}) }}
+
+            
+
+            <div class="mt-4 text-center">
+                {{ include('taille_admin/_delete_form.html.twig') }}
+            </div>
+            <div class="mt-4 text-center">
+                <a href="{{ path('app_taille_admin_index') }}" class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600">Retour à la liste des tailles</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}

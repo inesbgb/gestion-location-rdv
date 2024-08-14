@@ -1,0 +1,57 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Accueil{% endblock %}
+
+{% block body %}
+  <div class="pt-24">
+    <div class="container px-3 mx-auto flex flex-wrap flex-col md:flex-row items-center">
+      <!-- Colonne de gauche -->
+      <div class="flex flex-col w-full md:w-2/5 justify-center items-start text-center md:text-left">
+        <p class="uppercase tracking-loose w-full">Découvrez notre collection</p>
+        <h1 class="my-4 text-5xl font-bold leading-tight">
+          Louez ou achetez la robe parfaite
+        </h1>
+        <p class="leading-normal text-2xl mb-8">
+          Découvrez notre collection exclusive de robes pour invités et mariées. Prenez rendez-vous dès maintenant pour louer la robe parfaite pour votre événement ou pour acheter une robe de mariée sur mesure, conçue selon vos envies.
+        </p>
+        <a href="{{ path('app_appointment') }}" class="mx-auto lg:mx-0 hover:underline bg-gold text-white text-2xl font-bold rounded-full my-6 py-6 px-10 shadow-lg focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out">
+          Prendre Rendez-vous
+        </a>
+      </div>
+      <!-- Colonne de droite -->
+      <div class="w-full md:w-3/5 py-6 text-center">
+        <video class="custom-video w-full md:w-4/5 z-50" controls>
+          <source src="path_to_your_video.mp4" type="video/mp4">
+          Your browser does not support the video tag.
+        </video>
+      </div>
+    </div>
+  </div>
+<!-- Section Nouvelle Collection -->
+  <div class="pt-24">
+    <div class="container px-3 mx-auto">
+      <h2 class="text-4xl font-bold text-center mb-8">Nouvelle Collection de Robes à Louer</h2>
+      <div class="relative">
+        <div class="carousel flex overflow-x-scroll space-x-4">
+          <div class="carousel-item flex-none w-1/3 h-96 bg-gray-800 rounded-lg shadow-lg">
+            <img src="path_to_your_image1.jpg" alt="Robe 1" class="w-full h-full object-cover rounded-lg">
+          </div>
+          <div class="carousel-item flex-none w-1/3 h-96 bg-gray-800 rounded-lg shadow-lg">
+            <img src="path_to_your_image2.jpg" alt="Robe 2" class="w-full h-full object-cover rounded-lg">
+          </div>
+          <div class="carousel-item flex-none w-1/3 h-96 bg-gray-800 rounded-lg shadow-lg">
+            <img src="path_to_your_image3.jpg" alt="Robe 3" class="w-full h-full object-cover rounded-lg">
+          </div>
+          <!-- Ajoutez plus d'éléments de carrousel ici -->
+        </div>
+        <!-- Boutons de navigation -->
+         <button class="absolute left-0 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white p-2 rounded-full" onclick="scrollCarousel(-1)">
+    &#10094;
+  </button>
+  <button class="absolute right-0 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white p-2 rounded-full" onclick="scrollCarousel(1)">
+    &#10095;
+  </button>
+</div>
+</div>
+</div>
+{% endblock %}

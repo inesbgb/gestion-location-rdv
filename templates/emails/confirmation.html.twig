@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Confirmation de votre rendez-vous</title>
+</head>
+<body>
+    <h1>Confirmation de votre rendez-vous</h1>
+    <p>Bonjour {{ rendezVous.prenom }} {{ rendezVous.nom }},</p>
+    <p>Votre rendez-vous a été confirmé pour le {{ rendezVous.dateRdv|date('d/m/Y') }} à {{ rendezVous.dateRdv|date('H:i') }}.</p>
+    <p>Merci de votre confiance.</p>
+    <p>Cordialement,</p>
+    <p>L'équipe de CnK Couture</p>
+</body>
+</html>

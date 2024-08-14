@@ -1,0 +1,116 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nouvelle Réservation{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+{% endblock %}
+
+{% block body %}
+<div class="flex items-start justify-center min-h-screen bg-gray-100 py-8">
+    <div class="w-full max-w-lg bg-white p-8 rounded-lg shadow-md">
+        <h1 class="text-3xl font-bold mb-6 text-center">Créer une nouvelle réservation</h1>
+        {{ form_start(form, {'attr': {'class': 'space-y-4'}}) }}
+            <div>
+                {{ form_label(form.dateDebut, 'Date de début', {'label_attr': {'class': 'block text-sm font-medium text-gray-700'}}) }}
+                {{ form_widget(form.dateDebut, {'attr': {'class': 'w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500', 'id': 'date_debut'}}) }}
+                {{ form_errors(form.dateDebut) }}
+            </div>
+
+            <div>
+                {{ form_label(form.dateFin, 'Date de fin', {'label_attr': {'class': 'block text-sm font-medium text-gray-700'}}) }}
+                {{ form_widget(form.dateFin, {'attr': {'class': 'w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500', 'id': 'date_fin'}}) }}
+                {{ form_errors(form.dateFin) }}
+            </div>
+
+            <div>
+                {{ form_label(form.clientPrenom, 'Prénom du client', {'label_attr': {'class': 'block text-sm font-medium text-gray-700'}}) }}
+                {{ form_widget(form.clientPrenom, {'attr': {'class': 'w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500'}}) }}
+                {{ form_errors(form.clientPrenom) }}
+            </div>
+
+            <div>
+                {{ form_label(form.clientNom, 'Nom du client', {'label_attr': {'class': 'block text-sm font-medium text-gray-700'}}) }}
+                {{ form_widget(form.clientNom, {'attr': {'class': 'w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500'}}) }}
+                {{ form_errors(form.clientNom) }}
+            </div>
+
+            <div>
+                {{ form_label(form.clientEmail, 'Email du client', {'label_attr': {'class': 'block text-sm font-medium text-gray-700'}}) }}
+                {{ form_widget(form.clientEmail, {'attr': {'class': 'w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500'}}) }}
+                {{ form_errors(form.clientEmail) }}
+            </div>
+
+            <div>
+                {{ form_label(form.clientTelephone, 'Téléphone du client', {'label_attr': {'class': 'block text-sm font-medium text-gray-700'}}) }}
+                {{ form_widget(form.clientTelephone, {'attr': {'class': 'w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500'}}) }}
+                {{ form_errors(form.clientTelephone) }}
+            </div>
+{% if form.depotType is defined %}
+            <div>
+                {{ form_label(form.depotType, 'Type de dépôt', {'label_attr': {'class': 'block text-sm font-medium text-gray-700'}}) }}
+                {{ form_widget(form.depotType, {'attr': {'class': 'w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500'}}) }}
+                {{ form_errors(form.depotType) }}
+            </div>
+            {% endif %}
+
+            {% if form.depotMontant is defined %}
+            <div>
+                {{ form_label(form.depotMontant, 'Montant du dépôt', {'label_attr': {'class': 'block text-sm font-medium text-gray-700'}}) }}
+                {{ form_widget(form.depotMontant, {'attr': {'class': 'w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500'}}) }}
+                {{ form_errors(form.depotMontant) }}
+            </div>
+            {% endif %}
+            <div class="flex items-center justify-between">
+                <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">Créer la réservation</button>
+                <a href="{{ path('app_produit_admin_show', {'id': produit.id}) }}" class="px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400">Annuler</a>
+            </div>
+        {{ form_end(form) }}
+    </div>
+</div>
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://npmcdn.com/flatpickr/dist/l10n/fr.js"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        flatpickr.localize(flatpickr.l10ns.fr);
+
+        const joursOuverts = {{ openDays|json_encode|raw }};
+        console.log('Jours Ouverts:', joursOuverts);
+
+        function getDatesForOpenDays(openDays) {
+            const today = new Date();
+            const dates = [];
+
+            const dayMap = {
+                "dimanche": 0, "lundi": 1, "mardi": 2, "mercredi": 3,
+                "jeudi": 4, "vendredi": 5, "samedi": 6
+            };
+
+            for (let i = 0; i < 365; i++) { 
+                const date = new Date(today);
+                date.setDate(today.getDate() + i);
+                const dayName = Object.keys(dayMap).find(key => dayMap[key] === date.getDay());
+                if (openDays.includes(dayName)) {
+                    dates.push(date);
+                }
+            }
+
+            return dates;
+        }
+
+        const enabledDates = getDatesForOpenDays(joursOuverts);
+
+        flatpickr("#reservation_date_debut", {
+            dateFormat: "Y-m-d",
+            enable: enabledDates,
+            onChange: function(selectedDates, dateStr, instance) {
+                // Ici, vous pouvez ajouter une logique supplémentaire si nécessaire
+            }
+        });
+    });
+    </script>
+{% endblock %}

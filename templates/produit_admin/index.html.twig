@@ -1,0 +1,180 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Produit index{% endblock %}
+
+{% block body %}
+    <h1 class="text-2xl font-bold mb-4 text-center">Mes robes</h1>
+    
+    <!-- Formulaire de filtrage amélioré -->
+    {{ form_start(form, {'attr': {'class': 'mb-4 flex flex-wrap justify-center items-end space-x-2 space-y-2'}}) }}
+        <div class="flex flex-col">
+            <label for="{{ form.query.vars.id }}" class="mb-1 font-semibold">Recherche</label>
+            {{ form_widget(form.query, {'attr': {'class': 'border rounded px-2 py-1', 'placeholder': 'Rechercher...'}}) }}
+        </div>
+        
+        <div class="flex flex-col">
+            <label for="{{ form.categorie.vars.id }}" class="mb-1 font-semibold">Catégorie</label>
+            {{ form_widget(form.categorie, {'attr': {'class': 'border rounded px-2 py-1'}}) }}
+        </div>
+        
+        <div class="flex flex-col">
+            <label for="{{ form.taille.vars.id }}" class="mb-1 font-semibold">Taille</label>
+            {{ form_widget(form.taille, {'attr': {'class': 'border rounded px-2 py-1'}}) }}
+        </div>
+        
+        <div class="flex flex-col">
+            <label for="{{ form.liquidation.vars.id }}" class="mb-1 font-semibold">Liquidation</label>
+            {{ form_widget(form.liquidation, {'attr': {'class': 'border rounded px-2 py-1'}}) }}
+        </div>
+        
+        <div class="flex flex-col">
+            <label for="{{ form.actif.vars.id }}" class="mb-1 font-semibold">Actif</label>
+            {{ form_widget(form.actif, {'attr': {'class': 'border rounded px-2 py-1'}}) }}
+        </div>
+        
+        <div class="flex flex-col">
+            <label for="{{ form.dateDebut.vars.id }}" class="mb-1 font-semibold">Date de début</label>
+            {{ form_widget(form.dateDebut, {'attr': {'class': 'border rounded px-2 py-1'}}) }}
+        </div>
+        
+        <div class="flex flex-col">
+            <label for="{{ form.dateFin.vars.id }}" class="mb-1 font-semibold">Date de fin</label>
+            {{ form_widget(form.dateFin, {'attr': {'class': 'border rounded px-2 py-1'}}) }}
+        </div>
+        
+      <div class="flex flex-col">
+    <label for="{{ form.stock.vars.id }}" class="mb-1 font-semibold">Disponibilité</label>
+    {{ form_widget(form.stock, {'attr': {'class': 'border rounded px-2 py-1'}}) }}
+</div>
+        
+        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Filtrer</button>
+    {{ form_end(form) }}
+    <a href="{{ path('app_produit_admin_index') }}" class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600">Réinitialiser</a>
+
+    <div class="overflow-x-auto">
+        <table class="min-w-full bg-white shadow-md rounded-lg overflow-hidden">
+            <thead class="bg-gray-800 text-white">
+                <tr>
+                    <th class="py-2 px-4">Photo</th>
+                    <th class="py-2 px-4">Désignation</th>
+                    <th class="py-2 px-4">Catégorie</th>
+                    <th class="py-2 px-4">Taille</th>
+                    <th class="py-2 px-4">Liquidation</th>
+                    <th class="py-2 px-4">Prix</th>
+                    <th class="py-2 px-4">Actif</th>
+                    <th class="py-2 px-4">Disponibilité</th>
+                    <th class="py-2 px-4">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for produit in produits %}
+    {% set isDisponible = true %}
+    {% set reservationEnCours = null %}
+    
+    {% if form.dateDebut.vars.value and form.dateFin.vars.value %}
+        {% for reservation in produit.reservations %}
+            {% if reservation.dateDebut <= form.dateFin.vars.value|date('Y-m-d') and reservation.dateFin >= form.dateDebut.vars.value|date('Y-m-d') and not reservation.retour %}
+                {% set isDisponible = false %}
+                {% set reservationEnCours = reservation %}
+            {% endif %}
+        {% endfor %}
+    {% else %}
+        {% set isDisponible = produit.stock %}
+    {% endif %}
+                <tr class="border-b">
+                    <td class="py-2 px-4">
+                        {% if produit.imageUrl %}
+                            <img src="{{ produit.imageUrl }}" alt="{{ produit.designation }}" style="width: 125px; height: 150px; object-fit: cover;">
+                        {% else %}
+                            No image
+                        {% endif %}
+                    </td>
+                    <td class="py-2 px-4">{{ produit.designation }}</td>
+                    <td class="py-2 px-4">{{ produit.categorie.libel }}</td>
+                    <td class="py-2 px-4">{{ produit.taille.libel }}</td>
+                    <td class="py-2 px-4">{{ produit.liquidation ? 'Oui' : 'Non' }}</td>
+                    <td class="py-2 px-4">{{ produit.prix }}</td>
+                    <td class="py-2 px-4">{{ produit.Actif ? 'Oui' : 'Non' }}</td>
+                  <td class="py-2 px-4">
+    <div class="flex items-center">
+        <span id="stock-status-{{ produit.id }}" class="mr-2 {% if produit.isDisponible %}text-green-500{% else %}text-red-500{% endif %}">
+            {{ produit.isDisponible ? 'Disponible' : 'Indisponible' }}
+        </span>
+        {% if not produit.isDisponible %}
+            <label class="relative inline-flex items-center cursor-pointer">
+                <input type="checkbox" 
+                       class="sr-only peer"
+                       data-produit-id="{{ produit.id }}"
+                       data-date-debut="{{ form.dateDebut.vars.value|date('Y-m-d') }}"
+                       data-date-fin="{{ form.dateFin.vars.value|date('Y-m-d') }}"
+                       onchange="toggleDisponibilite(this)">
+                <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+            </label>
+        {% endif %}
+    </div>
+</td>
+                    <td class="py-2 px-4">
+                        <a href="{{ path('app_produit_admin_show', {'id': produit.id}) }}" class="text-blue-500 hover:underline">Voir</a>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="9" class="py-2 px-4 text-center text-gray-500">Aucun produit trouvé</td>
+                </tr>
+            {% endfor %}
+           
+            </tbody>
+        </table>
+    </div>
+
+    <div class="flex justify-center mb-4 space-x-2">
+        <a href="{{ path('app_taille_admin_index') }}" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">Gérer les Tailles</a>
+        <a href="{{ path('app_categorie_admin_index') }}" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">Gérer les Catégories</a>
+        <a href="{{ path('app_produit_admin_new') }}" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Ajouter une Robe</a>
+    </div>
+
+    {% if produits.haveToPaginate is defined %}
+        <div class="navigation">
+            {{ knp_pagination_render(produits) }}
+        </div>
+    {% endif %}
+
+   <script>
+function toggleDisponibilite(checkbox) {
+    const produitId = checkbox.dataset.produitId;
+    const dateDebut = checkbox.dataset.dateDebut;
+    const dateFin = checkbox.dataset.dateFin;
+    const reservationId = checkbox.dataset.reservationId;
+
+    fetch(`/admin/produit/${produitId}/toggle-disponibilite`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': '{{ csrf_token('toggle_disponibilite') }}'
+        },
+        body: JSON.stringify({ 
+            dateDebut: dateDebut,
+            dateFin: dateFin,
+            reservationId: reservationId
+        }),
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            document.getElementById(`stock-status-${produitId}`).textContent = 'Disponible';
+            document.getElementById(`stock-status-${produitId}`).className = 'mr-2 text-green-500';
+            checkbox.closest('label').remove(); // Supprime le switch après l'avoir utilisé
+            alert('La robe a été marquée comme retournée et est maintenant disponible.');
+        } else {
+            alert('Une erreur est survenue lors de la mise à jour de la disponibilité.');
+            checkbox.checked = false;
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Une erreur est survenue lors de la mise à jour de la disponibilité.');
+        checkbox.checked = false;
+    });
+}
+</script>
+{% endblock %}

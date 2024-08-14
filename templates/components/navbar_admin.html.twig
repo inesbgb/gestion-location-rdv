@@ -1,0 +1,12 @@
+<nav class="bg-black text-white p-4">
+    <div class="container mx-auto flex justify-between items-center">
+        <a href="{{ path('app_admin') }}" class="text-2xl font-bold">CnK Couture Admin</a>
+        <ul class="flex space-x-6">
+            <li><a href="{{ path('app_admin') }}" class="hover:text-gold">Tableau de bord</a></li>
+            <li><a href="{{ path('app_appointment_admin_index') }}" class="hover:text-gold">Rendez-vous</a></li>
+            <li><a href="{{ path('app_produit_admin_index') }}" class="hover:text-gold">Robes</a></li>
+            <li><a href="{{ path('app_client_index') }}" class="hover:text-gold">Clients</a></li>
+            
+        </ul>
+    </div>
+</nav>

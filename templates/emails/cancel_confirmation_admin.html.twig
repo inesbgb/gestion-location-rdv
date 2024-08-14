@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Confirmation d'annulation de rendez-vous</title>
+</head>
+<body>
+    <p>Bonjour {{ rendezvous.prenom }},</p>
+    <p>Votre rendez-vous prévu le {{ rendezvous.dateRdv|date('Y-m-d H:i:s') }} a été annulé.</p>
+    <p>Veuillez reprendre rendez-vous en cliquant <a href="{{ path('app_appointment') }}">ici</a>.</p>
+    <p>Merci,</p>
+    <p>L'équipe de votre site</p>
+</body>
+</html>

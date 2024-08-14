@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nos Robes{% endblock %}
+
+{% block body %}
+    <h1 class="text-3xl font-bold mb-8 text-center">Nos Robes</h1>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        {% for produit in produits %}
+            <a href="{{ path('app_produit_show', {'id': produit.id}) }}" class="block bg-white shadow-md rounded-lg overflow-hidden hover:shadow-lg transition-shadow duration-300">
+                {% if produit.imageUrl %}
+                    <div class="w-full h-64 flex items-center justify-center bg-gray-200">
+                        <img src="{{ produit.imageUrl }}" alt="{{ produit.designation }}" class="max-w-full max-h-full object-contain">
+                    </div>
+                {% else %}
+                    <div class="w-full h-64 flex items-center justify-center bg-gray-200">
+                        No image
+                    </div>
+                {% endif %}
+                <div class="p-4">
+                    <h2 class="text-lg font-semibold text-center">{{ produit.designation }}</h2>
+                </div>
+            </a>
+        {% else %}
+            <div class="col-span-1 sm:col-span-2 md:col-span-3 lg:col-span-4">
+                <p class="text-center text-gray-500">Aucun produit trouvé</p>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

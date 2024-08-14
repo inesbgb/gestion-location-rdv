@@ -1,0 +1,100 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Prendre rendez-vous{% endblock %}
+
+{% block body %}
+<div class="flex items-start justify-center min-h-screen bg-gray-100 py-8">
+    <div class="w-full max-w-lg bg-white p-8 rounded-lg shadow-md mr-8">
+        <h1 class="text-3xl font-bold mb-6 text-center">Prendre rendez-vous</h1>
+        {{ form_start(form, {'attr': {'class': 'space-y-4'}}) }}
+            {{ form_row(form.type_evenement, {'attr': {'class': 'w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500'}}) }}
+            {{ form_row(form.date_evenemnt, {'attr': {'class': 'w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500'}}) }}
+            {{ form_row(form.email, {'attr': {'class': 'w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500'}}) }}
+            {{ form_row(form.prenom, {'attr': {'class': 'w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500'}}) }}
+            {{ form_row(form.nom, {'attr': {'class': 'w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500'}}) }}
+            {{ form_row(form.tel, {'attr': {'class': 'w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500'}}) }}
+            {{ form_row(form.date_rdv, {'attr': {'class': 'w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500', 'id': 'date_rdv'}}) }}
+            {{ form_row(form.heure_rdv, {'attr': {'class': 'w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500', 'id': 'heure_rdv'}}) }}
+           <button type="submit" class="w-full bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded-lg transform transition-transform duration-300 hover:scale-110">
+                Envoyer
+            </button>
+      
+            <p class="mt-4">
+                <a href="{{ path('rendezvous_annuler') }}" class="text-blue-500 hover:underline">Annuler un rendez-vous</a>
+            </p>
+            
+        {{ form_end(form) }}
+    </div>
+    <div class="w-full max-w-lg bg-white p-8 rounded-lg shadow-md">
+        <h2 class="text-2xl font-bold mb-4">Informations sur la prise de rendez-vous</h2>
+        <p class="mb-4">Veuillez noter les informations suivantes avant de prendre rendez-vous :</p>
+        <ul class="list-disc list-inside space-y-2">
+            <li>Les rendez-vous sont disponibles du lundi au vendredi de 10h à 19h.</li>
+            <li>Veuillez apporter une pièce d'identité lors de votre rendez-vous.</li>
+            <li>Les annulations doivent être faites au moins 24 heures à l'avance.</li>
+            <li>Pour toute question, veuillez nous contacter à l'adresse email suivante : contact@exemple.com.</li>
+        </ul>
+    </div>
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+
+   <script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const joursOuverts = {{ openDays|json_encode|raw }};
+       console.log('Jours Ouverts:', joursOuverts);
+   
+
+    function getDatesForOpenDays(openDays) {
+        const today = new Date();
+        const dates = [];
+
+        const dayMap = {
+            "dimanche": 0,
+            "lundi": 1,
+            "mardi": 2,
+            "mercredi": 3,
+            "jeudi": 4,
+            "vendredi": 5,
+            "samedi": 6
+        };
+
+        for (let i = 0; i < 365; i++) { 
+            const date = new Date(today);
+            date.setDate(today.getDate() + i);
+            const dayName = Object.keys(dayMap).find(key => dayMap[key] === date.getDay());
+            if (openDays.includes(dayName)) {
+                dates.push(date);
+            }
+        }
+
+        return dates;
+    }
+
+    const enabledDates = getDatesForOpenDays(joursOuverts);
+
+    flatpickr("#rendez_vous_date_rdv", {
+        dateFormat: "Y-m-d",
+      enable: enabledDates,
+        onChange: function(selectedDates, dateStr, instance) {
+            fetch('/check-availability?date=' + dateStr)
+                .then(response => response.json())
+                .then(data => {
+                    const heureRdvSelect = document.getElementById('rendez_vous_heure_rdv');
+                    heureRdvSelect.innerHTML = '';
+
+                    data.forEach(function(time) {
+                        const option = document.createElement('option');
+                        option.value = time;
+                        option.textContent = time;
+                        heureRdvSelect.appendChild(option);
+                    });
+                });
+        }
+    });
+});
+</script>
+   
+{% endblock %}

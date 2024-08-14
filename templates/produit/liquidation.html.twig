@@ -1,0 +1,27 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Produits en Liquidation{% endblock %}
+
+{% block body %}
+    <h1 class="text-2xl font-bold mb-4">Produits en Liquidation</h1>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {% for produit in produits %}
+            <div class="bg-white shadow-md rounded-lg overflow-hidden">
+                <img src="{{ produit.photoUrl }}" class="w-full h-48 object-cover" alt="{{ produit.designation }}">
+                <div class="p-4">
+                    <h5 class="text-lg font-semibold">{{ produit.designation }}</h5>
+                    <p class="text-gray-700"><strong>Prix:</strong> {{ produit.prix }} €</p>
+                    <div class="mt-4">
+                        <a href="{{ path('app_produit_show', {'id': produit.id}) }}" class="text-blue-500 hover:underline">Voir</a>
+                        <a href="{{ path('app_produit_edit', {'id': produit.id}) }}" class="text-blue-500 hover:underline ml-4">Modifier</a>
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <div class="col-span-1 md:col-span-2 lg:col-span-3">
+                <p class="text-center text-gray-500">Aucun produit en liquidation trouvé</p>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

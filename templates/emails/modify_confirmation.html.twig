@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Confirmation de modification de rendez-vous</title>
+</head>
+<body>
+    <p>Bonjour {{ rendezvous.prenom }},</p>
+    <p>Votre rendez-vous a été modifié. Voici les nouvelles informations :</p>
+    <p>Date : {{ rendezvous.dateRdv|date('Y-m-d') }}</p>
+    <p>Heure : {{ rendezvous.heureRdv|date('H:i:s') }}</p>
+    <p>Merci,</p>
+    <p>L'équipe de votre site</p>
+</body>
+</html>

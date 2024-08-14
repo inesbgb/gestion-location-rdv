@@ -1,0 +1,69 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}RendezVous{% endblock %}
+
+{% block body %}
+    <div class="flex justify-center items-center min-h-screen bg-gray-100">
+        <div class="bg-white shadow-md rounded-lg p-6 w-full max-w-lg">
+            <h1 class="text-2xl font-bold mb-4 text-center">RendezVous</h1>
+
+            <table class="min-w-full bg-white border border-gray-200">
+                <tbody>
+                    <tr class="border-t">
+                        <th class="px-4 py-2 text-left text-gray-600">Id</th>
+                        <td class="px-4 py-2">{{ rendez_vou.id }}</td>
+                    </tr>
+                    <tr class="border-t">
+                        <th class="px-4 py-2 text-left text-gray-600">Date rdv</th>
+                        <td class="px-4 py-2">{{ rendez_vou.dateRdv ? rendez_vou.dateRdv|date('Y-m-d H:i:s') : '' }}</td>
+                    </tr>
+                    <tr class="border-t">
+                        <th class="px-4 py-2 text-left text-gray-600">Heure rdv</th>
+                        <td class="px-4 py-2">{{ rendez_vou.heureRdv ? rendez_vou.heureRdv|date('H:i:s') : '' }}</td>
+                    </tr>
+                    <tr class="border-t">
+                        <th class="px-4 py-2 text-left text-gray-600">Statut</th>
+                        <td class="px-4 py-2">{{ rendez_vou.statut ? 'Yes' : 'No' }}</td>
+                    </tr>
+                    <tr class="border-t">
+                        <th class="px-4 py-2 text-left text-gray-600">Email</th>
+                        <td class="px-4 py-2">{{ rendez_vou.email }}</td>
+                    </tr>
+                    <tr class="border-t">
+                        <th class="px-4 py-2 text-left text-gray-600">Num rdv</th>
+                        <td class="px-4 py-2">{{ rendez_vou.numRdv }}</td>
+                    </tr>
+                    <tr class="border-t">
+                        <th class="px-4 py-2 text-left text-gray-600">Prenom</th>
+                        <td class="px-4 py-2">{{ rendez_vou.prenom }}</td>
+                    </tr>
+                    <tr class="border-t">
+                        <th class="px-4 py-2 text-left text-gray-600">Nom</th>
+                        <td class="px-4 py-2">{{ rendez_vou.nom }}</td>
+                    </tr>
+                    <tr class="border-t">
+                        <th class="px-4 py-2 text-left text-gray-600">Tel</th>
+                        <td class="px-4 py-2">{{ rendez_vou.tel }}</td>
+                    </tr>
+                    <tr class="border-t">
+                        <th class="px-4 py-2 text-left text-gray-600">Date evenement</th>
+                        <td class="px-4 py-2">{{ rendez_vou.dateEvenemnt ? rendez_vou.dateEvenemnt|date('Y-m-d H:i:s') : '' }}</td>
+                    </tr>
+                    <tr class="border-t">
+                        <th class="px-4 py-2 text-left text-gray-600">Type evenement</th>
+                        <td class="px-4 py-2">{{ rendez_vou.typeEvenement }}</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="mt-4 flex justify-between">
+                <a href="{{ path('app_appointment_admin_index') }}" class="text-blue-500 hover:underline">Retour à liste de mes Rendez-vous</a>
+                <a href="{{ path('app_appointment_admin_edit', {'id': rendez_vou.id}) }}" class="text-blue-500 hover:underline">Modifier</a>
+            </div>
+
+            <div class="mt-4">
+                {{ include('appointment_admin/_delete_form.html.twig') }}
+            </div>
+        </div>
+    </div>
+{% endblock %}

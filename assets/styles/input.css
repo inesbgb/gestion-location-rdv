@@ -1,0 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+.custom-video {
+    border-radius: 43% 57% 41% 59% / 85% 12% 88% 15%;
+    height: 500px;
+  }
