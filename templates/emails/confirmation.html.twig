@@ -7,7 +7,9 @@
 <body>
     <h1>Confirmation de votre rendez-vous</h1>
     <p>Bonjour {{ rendezVous.prenom }} {{ rendezVous.nom }},</p>
-    <p>Votre rendez-vous a été confirmé pour le {{ rendezVous.dateRdv|date('d/m/Y') }} à {{ rendezVous.dateRdv|date('H:i') }}.</p>
+    <p>Votre rendez-vous a été confirmé pour le {{ rendezVous.dateRdv|date('d/m/Y') }} à {{ rendezVous.heureRdv|date('H:i') }}.</p>
+    <p><strong>Numéro de rendez-vous : {{ rendezVous.numRdv }}</strong></p>
+    <p>Merci de conserver ce numéro, il pourra vous être demandé lors de votre rendez-vous.</p>
     <p>Merci de votre confiance.</p>
     <p>Cordialement,</p>
     <p>L'équipe de CnK Couture</p>

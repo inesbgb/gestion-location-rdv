@@ -4,9 +4,11 @@
     <meta charset="UTF-8">
     <title>{% block title %}Welcome!{% endblock %}</title>
     <link rel="stylesheet" href="{{ asset('styles/output.css') }}">
+    
     {% block stylesheets %}
         <link href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/5.10.1/main.min.css" rel="stylesheet">
         <link href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css" rel="stylesheet">
+        {{ encore_entry_link_tags('app') }}
     {% endblock %}
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 </head>
@@ -14,7 +16,7 @@
     {% if is_granted('ROLE_ADMIN') %}
             {% include 'components/navbar_admin.html.twig' %}
         {% else %}
-            {% include 'components/navbar_client.html.twig' %}
+            {% include 'components/navbar.html.twig' %}
         {% endif %}
         
 
@@ -28,6 +30,7 @@
     </footer>
 
     {% block javascripts %}
+    {{ encore_entry_script_tags('app') }}
         {% block importmap %}{{ importmap('app') }}{% endblock %}
         <script src="{{ asset('dist/bundle.js') }}"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
@@ -45,5 +48,6 @@
             }
         </script>
     {% endblock %}
+    
 </body>
 </html>

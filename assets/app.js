@@ -7,4 +7,9 @@ import './bootstrap.js';
  */
 import './styles/app.css';
 
+import Chart from 'chart.js/auto';
+
+// Rendre Chart disponible globalement si nécessaire
+window.Chart = Chart;
+
 console.log('This log comes from assets/app.js - welcome to AssetMapper! 🎉');

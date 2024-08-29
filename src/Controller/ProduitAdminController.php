@@ -101,7 +101,7 @@ public function show(Produit $produit): Response
 {
     return $this->render('produit_admin/show.html.twig', [
         'produit' => $produit,
-        'reservations' => $produit->getReservations(), // Voici l'alias
+        'reservations' => $produit->getReservations(), 
     ]);
 }
 

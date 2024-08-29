@@ -69,7 +69,7 @@ class ReservationController extends AbstractController
             return $this->redirectToRoute('app_produit_admin_show', ['id' => $produit->getId()]);
         }
     
-        $openDays = ['lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi']; // Ajustez selon vos besoins
+        $openDays = ['lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi']; 
     
         return $this->render('produit_admin/reservation.html.twig', [
             'form' => $form->createView(),

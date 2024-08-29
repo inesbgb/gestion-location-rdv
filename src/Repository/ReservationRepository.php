@@ -77,6 +77,32 @@ public function getMonthlyRevenue(): float
         ->getQuery()
         ->getSingleScalarResult() ?? 0;
 }
+public function getRevenueForPeriod(string $startDate, string $endDate): float
+{
+    $result = $this->createQueryBuilder('r')
+        ->select('SUM(p.prix)')
+        ->join('r.produit', 'p')
+        ->where('r.dateDebut BETWEEN :start AND :end')
+        ->setParameter('start', $startDate)
+        ->setParameter('end', $endDate)
+        ->getQuery()
+        ->getSingleScalarResult();
+
+    return $result ?? 0;
+}
+
+public function getReservationsCountForPeriod(string $startDate, string $endDate): int
+{
+    $result = $this->createQueryBuilder('r')
+        ->select('COUNT(r.id)')
+        ->where('r.dateDebut BETWEEN :start AND :end')
+        ->setParameter('start', $startDate)
+        ->setParameter('end', $endDate)
+        ->getQuery()
+        ->getSingleScalarResult();
+
+    return $result ?? 0;
+}
 //    /**
 //     * @return Reservation[] Returns an array of Reservation objects
 //     */

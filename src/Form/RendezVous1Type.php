@@ -6,7 +6,6 @@ namespace App\Form;
 use App\Entity\RendezVous;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -40,6 +39,13 @@ class RendezVous1Type extends AbstractType
             'label' => 'Heure du rendez-vous',
             'hours' => range(10, 19), // Heures de 10h à 19h
             'minutes' => [0], // Seulement les minutes 00
+        ])
+        ->add('statut', ChoiceType::class, [
+            'label' => 'Statut',
+            'choices' => [
+                'Confirmé' => true,
+                'Annulé' => false,
+            ],
         ])
             ->add('email', EmailType::class, [
                 'label' => 'Email',
@@ -78,6 +84,8 @@ class RendezVous1Type extends AbstractType
             ])
             ->add('num_rdv', IntegerType::class, [
                 'label' => 'Numéro unique de rendez-vous',
+                'disabled' => true,
+                'attr' => ['readonly' => true],
             ]);
     }
 

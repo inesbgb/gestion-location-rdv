@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20240814205009 extends AbstractMigration
+final class Version20240825060836 extends AbstractMigration
 {
     public function getDescription(): string
     {
@@ -20,12 +20,12 @@ final class Version20240814205009 extends AbstractMigration
     public function up(Schema $schema): void
     {
         // this up() migration is auto-generated, please modify it to your needs
-        $this->addSql('ALTER TABLE client ADD date_creation DATETIME NOT NULL');
+        $this->addSql('ALTER TABLE element_admin CHANGE video video VARCHAR(255) DEFAULT NULL');
     }
 
     public function down(Schema $schema): void
     {
         // this down() migration is auto-generated, please modify it to your needs
-        $this->addSql('ALTER TABLE client DROP date_creation');
+        $this->addSql('ALTER TABLE element_admin CHANGE video video VARCHAR(255) NOT NULL');
     }
 }

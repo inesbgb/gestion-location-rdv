@@ -1,0 +1,42 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}ElementAdmin{% endblock %}
+
+{% block body %}
+    <h1>ElementAdmin</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ element_admin.id }}</td>
+            </tr>
+            <tr>
+                <th>Video</th>
+                <td>{{ element_admin.video }}</td>
+            </tr>
+            <tr>
+                <th>CarouselImage1</th>
+                <td>{{ element_admin.carouselImage1 }}</td>
+            </tr>
+            <tr>
+                <th>CarouselImage2</th>
+                <td>{{ element_admin.carouselImage2 }}</td>
+            </tr>
+            <tr>
+                <th>CarouselImage3</th>
+                <td>{{ element_admin.carouselImage3 }}</td>
+            </tr>
+            <tr>
+                <th>ImageHistoire</th>
+                <td>{{ element_admin.imageHistoire }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_element_admin_index') }}">back to list</a>
+
+    <a href="{{ path('app_element_admin_edit', {'id': element_admin.id}) }}">edit</a>
+
+    {{ include('element_admin/_delete_form.html.twig') }}
+{% endblock %}

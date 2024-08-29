@@ -93,40 +93,37 @@ class AppointmentController extends AbstractController
         return $numRdv;
     }
     #[Route('/rendezvous/annuler', name: 'rendezvous_annuler', methods: ['GET', 'POST'])]
-    public function annuler(Request $request, EntityManagerInterface $entityManager, EmailService $emailService, CsrfTokenManagerInterface $csrfTokenManager): Response
-    {
-        if ($request->isMethod('POST')) {
-            $numRdv = $request->request->get('numRdv');
-            $csrfToken = $request->request->get('_csrf_token');
+public function annuler(Request $request, EntityManagerInterface $entityManager, EmailService $emailService, CsrfTokenManagerInterface $csrfTokenManager): Response
+{
+    $form = $this->createForm(AnnulerRendezVousType::class);
+    $form->handleRequest($request);
 
-            if (!$csrfTokenManager->isTokenValid(new CsrfToken('annuler_rdv', $csrfToken))) {
-                throw $this->createAccessDeniedException('Invalid CSRF token');
-            }
+    if ($form->isSubmitted() && $form->isValid()) {
+        $numRdv = $form->get('numRdv')->getData();
+        $rendezvous = $entityManager->getRepository(RendezVous::class)->findOneBy(['num_rdv' => $numRdv]);
 
-            $rendezvous = $entityManager->getRepository(RendezVous::class)->findOneBy(['num_rdv' => $numRdv]);
+        if ($rendezvous) {
+            $rendezvous->setStatut(false);
+            $entityManager->flush();
 
-            if ($rendezvous) {
-                $rendezvous->setStatut(false);
-                $entityManager->flush();
+            // Envoyer l'email de confirmation
+            $emailService->sendConfirmationEmail(
+                $rendezvous->getEmail(),
+                'Confirmation d\'annulation de rendez-vous',
+                $this->renderView('emails/cancel_confirmation.html.twig', ['rendezvous' => $rendezvous])
+            );
 
-                // Envoyer l'email de confirmation
-                $emailService->sendConfirmationEmail(
-                    $rendezvous->getEmail(),
-                    'Confirmation d\'annulation de rendez-vous',
-                    $this->renderView('emails/cancel_confirmation.html.twig', ['rendezvous' => $rendezvous])
-                );
-
-                $this->addFlash('success', 'Le rendez-vous a été annulé et un email de confirmation a été envoyé.');
-            } else {
-                $this->addFlash('error', 'Numéro de rendez-vous invalide.');
-            }
-
-            return $this->redirectToRoute('app_appointment');
+            $this->addFlash('success', 'Le rendez-vous a été annulé et un email de confirmation a été envoyé.');
+        } else {
+            $this->addFlash('error', 'Numéro de rendez-vous invalide.');
         }
 
-        return $this->render('appointment/cancel.html.twig', [
-            'form' => $this->createForm(AnnulerRendezVousType::class)->createView(),
-        ]);
+        return $this->redirectToRoute('app_appointment');
+    }
+
+    return $this->render('appointment/cancel_rdv.html.twig', [
+        'form' => $form->createView(),
+    ]);
     }
 
     

@@ -1,64 +1,119 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-<div class="container mx-auto">
-    <h2 class="text-3xl font-semibold mb-6">Tableau de bord</h2>
-    
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        <!-- Rendez-vous du jour -->
-        <div class="bg-white p-6 rounded-lg shadow-md  hover:bg-gray-50 transition-colors duration-200" onclick="toggleRdvDetails()" style="cursor: pointer;">
-    <h3 class="text-xl font-semibold mb-2">Rendez-vous aujourd'hui</h3>
-    <p class="text-3xl font-bold">{{ rdvCount }}</p>
+<div class="flex flex-col min-h-screen">
+    <div class="flex-grow container mx-auto px-4 py-8">
+        <h2 class="text-3xl font-semibold mb-6">Tableau de bord</h2>
+        
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+            <!-- Rendez-vous du jour -->
+            <div class="bg-white p-6 rounded-lg shadow-md hover:bg-gray-50 transition-colors duration-200 cursor-pointer" onclick="toggleRdvDetails()">
+                <h3 class="text-xl font-semibold mb-2">Rendez-vous aujourd'hui</h3>
+                <p class="text-3xl font-bold">{{ rdvCount }}</p>
+            </div>
+            
+            <!-- Nombre de clients par mois -->
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <h3 class="text-xl font-semibold mb-2">Nouveaux clients ce mois</h3>
+                <p class="text-3xl font-bold">{{ newClientsThisMonth }}</p>
+            </div>
+            
+            <!-- Comparaison RDV vs Réservations -->
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <h3 class="text-xl font-semibold mb-2">RDV vs Réservations (ce mois)</h3>
+                <p class="text-xl">RDV : <span class="font-bold">{{ monthlyRdvCount }}</span></p>
+                <p class="text-xl">Réservations : <span class="font-bold">{{ monthlyReservationsCount }}</span></p>
+            </div>
+            
+            <!-- CA du mois -->
+            <div class="bg-white p-6 rounded-lg shadow-md hover:bg-gray-50 transition-colors duration-200 cursor-pointer" onclick="toggleRevenueChart()">
+    <h3 class="text-xl font-semibold mb-2">CA du mois</h3>
+    <p class="text-3xl font-bold">{{ monthlyRevenue|number_format(2, ',', ' ') }} €</p>
 </div>
-        
-        <!-- Nombre de clients par mois -->
-        <div class="bg-white p-6 rounded-lg shadow-md">
-            <h3 class="text-xl font-semibold mb-2">Nouveaux clients ce mois</h3>
-            <p class="text-3xl font-bold">{{ newClientsThisMonth }}</p>
         </div>
         
-        <!-- Comparaison RDV vs Réservations -->
-        <div class="bg-white p-6 rounded-lg shadow-md">
-            <h3 class="text-xl font-semibold mb-2">RDV vs Réservations (ce mois)</h3>
-            <p class="text-xl">RDV : <span class="font-bold">{{ monthlyRdvCount }}</span></p>
-            <p class="text-xl">Réservations : <span class="font-bold">{{ monthlyReservationsCount }}</span></p>
+        <!-- Détails des rendez-vous -->
+        <div id="rdvDetails" class="bg-white p-6 rounded-lg shadow-md hidden mb-8">
+            <h3 class="text-2xl font-semibold mb-4">Rendez-vous du jour</h3>
+            <div class="overflow-x-auto">
+                <table class="w-full">
+                    <thead>
+                        <tr>
+                            <th class="text-left py-2">Heure</th>
+                            <th class="text-left py-2">Client</th>
+                            <th class="text-left py-2">Type</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for rdv in rdvs %}
+                        <tr>
+                            <td class="py-2">{{ rdv.heureRdv|date('H:i') }}</td>
+                            <td class="py-2">{{ rdv.prenom }} {{ rdv.nom }}</td>
+                            <td class="py-2">{{ rdv.typeEvenement }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
         </div>
-        
-        <!-- CA du mois -->
-        <div class="bg-white p-6 rounded-lg shadow-md">
-            <h3 class="text-xl font-semibold mb-2">CA du mois</h3>
-            <p class="text-3xl font-bold">{{ monthlyRevenue|number_format(2, ',', ' ') }} €</p>
-        </div>
+    <div id="revenueChart" class="bg-white p-6 rounded-lg shadow-md mb-8">
+        <h3 class="text-2xl font-semibold mb-4">CA et réservations des 12 derniers mois</h3>
+        <canvas id="revenueReservationsChart"></canvas>
     </div>
-    
-    <!-- Détails des rendez-vous -->
-    <div id="rdvDetails" class="mt-6 bg-white p-6 rounded-lg shadow-md hidden">
-        <h3 class="text-2xl font-semibold mb-4">Rendez-vous du jour</h3>
-        <table class="w-full">
-            <thead>
-                <tr>
-                    <th class="text-left">Heure</th>
-                    <th class="text-left">Client</th>
-                    <th class="text-left">Type</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for rdv in rdvs %}
-                <tr>
-                    <td>{{ rdv.heureRdv|date('H:i') }}</td>
-                    <td>{{ rdv.prenom }} {{ rdv.nom }}</td>
-                    <td>{{ rdv.typeEvenement }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-</div>
+{% endblock %}
 
-<script>
-function toggleRdvDetails() {
-    var details = document.getElementById('rdvDetails');
-    details.classList.toggle('hidden');
-}
-</script>
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            renderRevenueChart();
+        });
+
+        function renderRevenueChart() {
+            var ctx = document.getElementById('revenueReservationsChart').getContext('2d');
+            var chartData = {{ chartData|json_encode|raw }};
+
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: chartData.labels,
+                    datasets: [{
+                        label: 'Chiffre d\'affaires (€)',
+                        data: chartData.revenues,
+                        backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        borderWidth: 1,
+                        yAxisID: 'y-axis-1',
+                    }, {
+                        label: 'Réservations de robes',
+                        data: chartData.reservations,
+                        backgroundColor: 'rgba(255, 99, 132, 0.5)',
+                        borderColor: 'rgba(255, 99, 132, 1)',
+                        borderWidth: 1,
+                        yAxisID: 'y-axis-2',
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        'y-axis-1': {
+                            type: 'linear',
+                            position: 'left',
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return value + ' €';
+                                }
+                            }
+                        },
+                        'y-axis-2': {
+                            type: 'linear',
+                            position: 'right',
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+    </script>
 {% endblock %}

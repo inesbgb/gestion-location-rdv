@@ -1,77 +1,107 @@
-{{ form_start(form, {'attr': {'class': 'space-y-4'}}) }}
-    <div>
-        {{ form_label(form.date_rdv, null, {'attr': {'class': 'block text-gray-700 text-sm font-bold mb-2'}}) }}
-        {{ form_widget(form.date_rdv, {
+{{ form_start(form, {'attr': {'class': 'space-y-6'}}) }}
+    <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+       <div>
+            {{ form_label(form.statut, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700'}}) }}
+            {{ form_widget(form.statut, {
+                'attr': {
+                    'class': 'mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm'
+                }
+            }) }}
+            {{ form_errors(form.statut, {'attr': {'class': 'text-red-500 text-xs mt-1'}}) }}
+        </div>
+       <div>
+    {{ form_label(form.heure_rdv, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700'}}) }}
+    {{ form_widget(form.heure_rdv, {
+        'attr': {
+            'class': 'mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm'
+        }
+    }) }}
+    {{ form_errors(form.heure_rdv, {'attr': {'class': 'text-red-500 text-xs mt-1'}}) }}
+</div>
+        <div>
+            {{ form_label(form.email, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700'}}) }}
+            {{ form_widget(form.email, {
+                'attr': {
+                    'class': 'mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm'
+                }
+            }) }}
+            {{ form_errors(form.email, {'attr': {'class': 'text-red-500 text-xs mt-1'}}) }}
+        </div>
+        <div>
+            {{ form_label(form.prenom, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700'}}) }}
+            {{ form_widget(form.prenom, {
+                'attr': {
+                    'class': 'mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm'
+                }
+            }) }}
+            {{ form_errors(form.prenom, {'attr': {'class': 'text-red-500 text-xs mt-1'}}) }}
+        </div>
+        <div>
+            {{ form_label(form.nom, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700'}}) }}
+            {{ form_widget(form.nom, {
+                'attr': {
+                    'class': 'mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm'
+                }
+            }) }}
+            {{ form_errors(form.nom, {'attr': {'class': 'text-red-500 text-xs mt-1'}}) }}
+        </div>
+        <div>
+            {{ form_label(form.tel, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700'}}) }}
+            {{ form_widget(form.tel, {
+                'attr': {
+                    'class': 'mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm'
+                }
+            }) }}
+            {{ form_errors(form.tel, {'attr': {'class': 'text-red-500 text-xs mt-1'}}) }}
+        </div>
+        <div>
+            {{ form_label(form.date_evenemnt, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700'}}) }}
+            {{ form_widget(form.date_evenemnt, {
+                'attr': {
+                    'class': 'mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm'
+                }
+            }) }}
+            {{ form_errors(form.date_evenemnt, {'attr': {'class': 'text-red-500 text-xs mt-1'}}) }}
+        </div>
+        <div>
+            {{ form_label(form.type_evenement, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700'}}) }}
+            {{ form_widget(form.type_evenement, {
+                'attr': {
+                    'class': 'mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm'
+                }
+            }) }}
+            {{ form_errors(form.type_evenement, {'attr': {'class': 'text-red-500 text-xs mt-1'}}) }}
+        </div>
+        <div>
+             {{ form_label(form.num_rdv, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700'}}) }}
+    <div class="mt-1 relative rounded-md shadow-sm">
+        {{ form_widget(form.num_rdv, {
             'attr': {
-                'class': 'shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline'
+                'class': 'bg-gray-100 mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm',
+                'readonly': true
             }
         }) }}
-        {{ form_errors(form.date_rdv) }}
+        <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+            <svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" />
+            </svg>
+        </div>
     </div>
-    <div>
-        {{ form_label(form.heure_rdv, null, {'attr': {'class': 'block text-gray-700 text-sm font-bold mb-2'}}) }}
-        {{ form_widget(form.heure_rdv, {
-            'attr': {
-                'class': 'shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline'
-            }
-        }) }}
-        {{ form_errors(form.heure_rdv) }}
+    <p class="mt-2 text-sm text-gray-500">Ce numéro est généré automatiquement et ne peut pas être modifié.</p>
+    {{ form_errors(form.num_rdv, {'attr': {'class': 'text-red-500 text-xs mt-1'}}) }}
+</div>
     </div>
-    <div>
-        {{ form_label(form.email, null, {'attr': {'class': 'block text-gray-700 text-sm font-bold mb-2'}}) }}
-        {{ form_widget(form.email, {
-            'attr': {
-                'class': 'shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline'
-            }
-        }) }}
-        {{ form_errors(form.email) }}
+    <div class="mt-6 flex justify-between items-center">
+        <a href="{{ path('app_appointment_admin_index') }}" class="inline-flex items-center px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 text-sm font-medium rounded-md transition duration-300 ease-in-out">
+            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+            Retour à la liste
+        </a>
+        <button type="submit" class="inline-flex items-center px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white text-sm font-medium rounded-md transition duration-300 ease-in-out">
+            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+            Mettre à jour
+        </button>
     </div>
-    <div>
-        {{ form_label(form.prenom, null, {'attr': {'class': 'block text-gray-700 text-sm font-bold mb-2'}}) }}
-        {{ form_widget(form.prenom, {
-            'attr': {
-                'class': 'shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline'
-            }
-        }) }}
-        {{ form_errors(form.prenom) }}
-    </div>
-    <div>
-        {{ form_label(form.nom, null, {'attr': {'class': 'block text-gray-700 text-sm font-bold mb-2'}}) }}
-        {{ form_widget(form.nom, {
-            'attr': {
-                'class': 'shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline'
-            }
-        }) }}
-        {{ form_errors(form.nom) }}
-    </div>
-    <div>
-        {{ form_label(form.tel, null, {'attr': {'class': 'block text-gray-700 text-sm font-bold mb-2'}}) }}
-        {{ form_widget(form.tel, {
-            'attr': {
-                'class': 'shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline'
-            }
-        }) }}
-        {{ form_errors(form.tel) }}
-    </div>
-    <div>
-        {{ form_label(form.date_evenemnt, null, {'attr': {'class': 'block text-gray-700 text-sm font-bold mb-2'}}) }}
-        {{ form_widget(form.date_evenemnt, {
-            'attr': {
-                'class': 'shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline'
-            }
-        }) }}
-        {{ form_errors(form.date_evenemnt) }}
-    </div>
-    <div>
-        {{ form_label(form.type_evenement, null, {'attr': {'class': 'block text-gray-700 text-sm font-bold mb-2'}}) }}
-        {{ form_widget(form.type_evenement, {
-            'attr': {
-                'class': 'shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline'
-            }
-        }) }}
-        {{ form_errors(form.type_evenement) }}
-    </div>
-    <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full">
-        {{ button_label|default('Save') }}
-    </button>
 {{ form_end(form) }}
+<div class="mt-4 flex justify-center">
+    {{ include('appointment_admin/_delete_form.html.twig', {'button_class': 'inline-flex items-center px-4 py-2 bg-red-500 hover:bg-red-600 text-white text-sm font-medium rounded-md transition duration-300 ease-in-out'}) }}
+</div>

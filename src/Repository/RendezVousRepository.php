@@ -117,6 +117,15 @@ class RendezVousRepository extends ServiceEntityRepository
         ->getQuery()
         ->getSingleScalarResult();
 }
+public function findByDate(\DateTime $date)
+{
+    return $this->createQueryBuilder('a')
+        ->andWhere('DATE(a.dateRdv) = :date')
+        ->setParameter('date', $date->format('Y-m-d'))
+        ->orderBy('a.heureRdv', 'ASC')
+        ->getQuery()
+        ->getResult();
+}
    
 
     //    /**
