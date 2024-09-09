@@ -6,15 +6,14 @@ use App\Entity\RendezVous;
 use App\Form\RendezVousType;
 use App\Service\EmailService;
 use App\Repository\JourRepository;
-use App\Form\AnnulerRendezVousType;
+use App\Form\AnnulezRendezVousType;
 use App\Repository\RendezVousRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Security\Csrf\CsrfToken;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
+
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class AppointmentController extends AbstractController
@@ -93,9 +92,9 @@ class AppointmentController extends AbstractController
         return $numRdv;
     }
     #[Route('/rendezvous/annuler', name: 'rendezvous_annuler', methods: ['GET', 'POST'])]
-public function annuler(Request $request, EntityManagerInterface $entityManager, EmailService $emailService, CsrfTokenManagerInterface $csrfTokenManager): Response
+public function annuler(Request $request, EntityManagerInterface $entityManager, EmailService $emailService): Response
 {
-    $form = $this->createForm(AnnulerRendezVousType::class);
+    $form = $this->createForm(AnnulezRendezVousType::class);
     $form->handleRequest($request);
 
     if ($form->isSubmitted() && $form->isValid()) {
@@ -103,17 +102,25 @@ public function annuler(Request $request, EntityManagerInterface $entityManager,
         $rendezvous = $entityManager->getRepository(RendezVous::class)->findOneBy(['num_rdv' => $numRdv]);
 
         if ($rendezvous) {
-            $rendezvous->setStatut(false);
-            $entityManager->flush();
+            $now = new \DateTime();
+            $rdvDate = $rendezvous->getDateRdv();
+            $interval = $now->diff($rdvDate);
+            
+            if ($interval->days >= 1 || ($interval->days == 0 && $interval->h >= 24)) {
+                $rendezvous->setStatut(false);
+                $entityManager->flush();
 
-            // Envoyer l'email de confirmation
-            $emailService->sendConfirmationEmail(
-                $rendezvous->getEmail(),
-                'Confirmation d\'annulation de rendez-vous',
-                $this->renderView('emails/cancel_confirmation.html.twig', ['rendezvous' => $rendezvous])
-            );
+                // Envoyer l'email de confirmation
+                $emailService->sendConfirmationEmail(
+                    $rendezvous->getEmail(),
+                    'Confirmation d\'annulation de rendez-vous',
+                    $this->renderView('emails/cancel_confirmation.html.twig', ['rendezvous' => $rendezvous])
+                );
 
-            $this->addFlash('success', 'Le rendez-vous a été annulé et un email de confirmation a été envoyé.');
+                $this->addFlash('success', 'Le rendez-vous a été annulé et un email de confirmation a été envoyé.');
+            } else {
+                $this->addFlash('error', 'Désolé, vous ne pouvez plus annuler ce rendez-vous sur notre site. L\'annulation doit être faite au moins 24 heures à l\'avance. Contactez nous sur whatsapp');
+            }
         } else {
             $this->addFlash('error', 'Numéro de rendez-vous invalide.');
         }
@@ -124,7 +131,7 @@ public function annuler(Request $request, EntityManagerInterface $entityManager,
     return $this->render('appointment/cancel_rdv.html.twig', [
         'form' => $form->createView(),
     ]);
-    }
+}
 
     
    

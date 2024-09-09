@@ -6,7 +6,7 @@
 <div class="container mx-auto px-4 py-8">
     <h1 class="text-2xl sm:text-3xl font-bold mb-6 text-center">Liste des Clients</h1>
 
-    <form action="{{ path('app_client_send_email') }}" method="post" id="clientForm" class="space-y-6">
+    <form action="{{ path('app_client_index') }}" method="post" id="clientForm" class="space-y-6">
         <div class="overflow-x-auto bg-white shadow-md rounded-lg">
             <table class="w-full table-auto">
                 <thead class="bg-gray-200 text-gray-700">
@@ -45,7 +45,7 @@
             </table>
         </div>
 
-        <div id="emailForm" class="hidden bg-white shadow-md rounded-lg p-6 space-y-4">
+       <div id="emailForm" class="hidden bg-white shadow-md rounded-lg p-6 space-y-4">
             <h2 class="text-xl font-semibold mb-4">Envoyer un e-mail aux clients sélectionnés</h2>
             <div>
                 <label for="emailSubject" class="block text-sm font-medium text-gray-700 mb-1">Sujet :</label>
@@ -66,31 +66,28 @@
 </div>
 
     <script>
-        document.getElementById('selectAll').addEventListener('change', function() {
-            var checkboxes = document.getElementsByName('clients[]');
-            for (var checkbox of checkboxes) {
-                checkbox.checked = this.checked;
-            }
+    document.addEventListener('DOMContentLoaded', function() {
+        const selectAll = document.getElementById('selectAll');
+        const showEmailFormButton = document.getElementById('showEmailForm');
+        const emailForm = document.getElementById('emailForm');
+
+        selectAll.addEventListener('change', function() {
+            const checkboxes = document.getElementsByName('clients[]');
+            checkboxes.forEach(checkbox => checkbox.checked = this.checked);
         });
 
-        document.getElementById('showEmailForm').addEventListener('click', function() {
-            document.getElementById('emailForm').style.display = 'block';
+        showEmailFormButton.addEventListener('click', function() {
+            emailForm.style.display = 'block';
             this.style.display = 'none';
         });
 
         document.getElementById('clientForm').addEventListener('submit', function(e) {
-            var checkboxes = document.getElementsByName('clients[]');
-            var hasChecked = false;
-            for (var checkbox of checkboxes) {
-                if (checkbox.checked) {
-                    hasChecked = true;
-                    break;
-                }
-            }
-            if (!hasChecked) {
+            const selectedClients = document.querySelectorAll('input[name="clients[]"]:checked');
+            if (selectedClients.length === 0) {
                 e.preventDefault();
                 alert('Veuillez sélectionner au moins un client.');
             }
         });
-    </script>
+    });
+</script>
 {% endblock %}

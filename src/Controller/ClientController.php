@@ -4,23 +4,49 @@ namespace App\Controller;
 
 use App\Entity\Client;
 use App\Form\ClientType;
-use Symfony\Component\Mime\Email;
+use Psr\Log\LoggerInterface;
+use App\Service\EmailService;
 use App\Repository\ClientRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 #[Route('/client')]
 class ClientController extends AbstractController
 {
-    #[Route('/', name: 'app_client_index', methods: ['GET'])]
-    public function index(ClientRepository $clientRepository): Response
+    
+    #[Route('/', name: 'app_client_index', methods: ['GET', 'POST'])]
+    public function index(Request $request, ClientRepository $clientRepository, EmailService $emailService): Response
     {
+        $clients = $clientRepository->findAll();
+    
+        if ($request->isMethod('POST')) {
+            $clientIds = $request->request->all('clients');
+            $subject = $request->request->get('subject');
+            $content = $request->request->get('content');
+    
+            if (!empty($clientIds)) {
+                $selectedClients = $clientRepository->findBy(['id' => $clientIds]);
+                foreach ($selectedClients as $client) {
+                    try {
+                        $emailService->sendEmail($client->getEmail(), $subject, $content);
+                    } catch (\Exception $e) {
+                        $this->addFlash('error', "Erreur lors de l'envoi de l'e-mail à {$client->getEmail()}: {$e->getMessage()}");
+                    }
+                }
+                $this->addFlash('success', 'Les e-mails ont été envoyés avec succès.');
+            } else {
+                $this->addFlash('error', 'Veuillez sélectionner au moins un client.');
+            }
+    
+            return $this->redirectToRoute('app_client_index');
+        }
+    
         return $this->render('client/index.html.twig', [
-            'clients' => $clientRepository->findAll(),
+            'clients' => $clients,
         ]);
     }
 
@@ -72,36 +98,20 @@ class ClientController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_client_delete', methods: ['POST'])]
-    public function delete(Request $request, Client $client, EntityManagerInterface $entityManager): Response
+    public function delete(Request $request, int $id, ClientRepository $clientRepository, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$client->getId(), $request->getPayload()->getString('_token'))) {
+        $client = $clientRepository->find($id);
+        
+        if (!$client) {
+            throw $this->createNotFoundException('Client non trouvé');
+        }
+    
+        if ($this->isCsrfTokenValid('delete'.$client->getId(), $request->request->get('_token'))) {
             $entityManager->remove($client);
             $entityManager->flush();
         }
-
+    
         return $this->redirectToRoute('app_client_index', [], Response::HTTP_SEE_OTHER);
     }
-    #[Route('/send-email', name: 'app_client_send_email', methods: ['POST'])]
-public function sendEmail(Request $request, ClientRepository $clientRepository, MailerInterface $mailer): Response
-{
-    $clientIds = $request->request->get('clients', []);
-    $subject = $request->request->get('subject');
-    $content = $request->request->get('content');
-
-    $clients = $clientRepository->findBy(['id' => $clientIds]);
-
-    foreach ($clients as $client) {
-        $email = (new Email())
-            ->from('your@email.com')
-            ->to($client->getEmail())
-            ->subject($subject)
-            ->text($content);
-
-        $mailer->send($email);
-    }
-
-    $this->addFlash('success', 'E-mails envoyés avec succès.');
-
-    return $this->redirectToRoute('app_client_index');
-}
+    
 }

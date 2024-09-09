@@ -24,35 +24,26 @@ class ProduitAdminController extends AbstractController
 {
     #[Route('/', name: 'app_produit_admin_index', methods: ['GET'])]
     public function index(Request $request, ProduitRepository $produitRepository): Response
-{
-    $searchData = new SearchData();
-    $form = $this->createForm(SearchType::class, $searchData);
-    $form->handleRequest($request);
+    {
+        $searchData = new SearchData();
+        $form = $this->createForm(SearchType::class, $searchData);
+        $form->handleRequest($request);
 
-    $produits = $produitRepository->findSearch($searchData);
+        // Récupération des produits selon les critères de recherche
+        $produits = $produitRepository->findSearch($searchData);
 
-    foreach ($produits as $produit) {
-        $isDisponible = true;
-        if ($searchData->dateDebut && $searchData->dateFin) {
-            foreach ($produit->getReservations() as $reservation) {
-                if ($reservation->getDateDebut() <= $searchData->dateFin &&
-                    $reservation->getDateFin() >= $searchData->dateDebut &&
-                    !$reservation->isRetour()) {
-                    $isDisponible = false;
-                    break;
-                }
-            }
-        } else {
-            $isDisponible = $produit->isStock();
+        // Boucle sur les produits pour déterminer leur disponibilité
+        foreach ($produits as $produit) {
+            // Utilise la méthode du repository pour déterminer la disponibilité
+            $isDisponible = $produitRepository->isProduitDisponible($produit, $searchData->dateDebut, $searchData->dateFin);
+            $produit->isDisponible = $isDisponible;
         }
-        $produit->isDisponible = $isDisponible;
-    }
 
-    return $this->render('produit_admin/index.html.twig', [
-        'produits' => $produits,
-        'form' => $form->createView(),
-    ]);
-}
+        return $this->render('produit_admin/index.html.twig', [
+            'produits' => $produits,
+            'form' => $form->createView(),
+        ]);
+    }
 #[Route('/admin/produit/{id}/toggle-disponibilite', name: 'app_produit_admin_toggle_disponibilite', methods: ['POST'])]
 public function toggleDisponibilite(Request $request, Produit $produit, EntityManagerInterface $entityManager): JsonResponse
 {

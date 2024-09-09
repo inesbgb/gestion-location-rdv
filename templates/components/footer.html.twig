@@ -1,0 +1,23 @@
+<footer class="footer mt-auto py-3 bg-light" align="center">
+    <div class="container">
+        <p>&copy; {{ "now"|date("Y") }} CNK Couture. Tous droits réservés.</p>
+        <div class="footer-links">
+            <a href="{{ path('app_mentions_legales') }}">Mentions Légales</a>
+            <a href="{{ path('app_conditions_vente') }}">Conditions de Vente</a>
+        </div>
+    </div>
+</footer>
+
+<style>
+    .footer-links {
+        margin-top: 10px;
+    }
+    .footer-links a {
+        margin: 0 10px;
+        color: #6c757d;
+        text-decoration: none;
+    }
+    .footer-links a:hover {
+        text-decoration: underline;
+    }
+</style>

@@ -25,9 +25,7 @@
         {% block body %}{% endblock %}
     </main>
 
-    <footer class="bg-gray-200 p-4 mt-auto">
-        <!-- Footer content -->
-    </footer>
+    {% include 'components/footer.html.twig' %}
 
     {% block javascripts %}
     {{ encore_entry_script_tags('app') }}

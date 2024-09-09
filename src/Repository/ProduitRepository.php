@@ -23,7 +23,26 @@ class ProduitRepository extends ServiceEntityRepository
         parent::__construct($registry, Produit::class);
         $this->paginator = $paginator;
     }
+    public function isProduitDisponible(Produit $produit, ?\DateTimeInterface $dateDebut, ?\DateTimeInterface $dateFin): bool
+    {
+        // Si aucune date n'est fournie, on vérifie simplement le stock
+        if (!$dateDebut || !$dateFin) {
+            return $produit->isStock();
+        }
 
+        // Si des dates sont fournies, on vérifie les réservations
+        foreach ($produit->getReservations() as $reservation) {
+            // Si la réservation chevauche la période demandée et que le produit n'a pas été retourné
+            if ($reservation->getDateDebut() <= $dateFin &&
+                $reservation->getDateFin() >= $dateDebut &&
+                !$reservation->isRetour()) {
+                return false;
+            }
+        }
+
+        // Si aucune réservation ne bloque, le produit est disponible
+        return true;
+    }
     public function findSearch(SearchData $searchData): PaginationInterface
 {
     $query = $this->createQueryBuilder('p')

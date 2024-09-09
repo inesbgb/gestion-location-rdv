@@ -53,7 +53,7 @@ class EmailService
         $this->sendEmail($to, $subject, $htmlContent);
     }
 
-    // Vous pouvez ajouter d'autres méthodes pour différents types d'emails
+    // je peux ajouter d'autres méthodes pour différents types d'emails
     public function sendNewsletterEmail(string $to, string $subject, string $htmlContent): void
     {
         $this->sendEmail($to, $subject, $htmlContent, 'newsletter@exemple.com', 'Newsletter');
