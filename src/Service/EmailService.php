@@ -5,29 +5,31 @@ namespace App\Service;
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
 class EmailService
 {
     private $mailer;
     private $logger;
+    private $params;
 
-    public function __construct(LoggerInterface $logger)
+    public function __construct(LoggerInterface $logger, ParameterBagInterface $params)
     {
         $this->mailer = new PHPMailer(true);
         $this->logger = $logger;
+        $this->params = $params;
         $this->configureMailer();
     }
 
     private function configureMailer(): void
     {
-        // Configuration du serveur SMTP
         $this->mailer->isSMTP();
-        $this->mailer->Host = 'smtp.gmail.com';
+        $this->mailer->Host = $this->params->get('mailer_host');
         $this->mailer->SMTPAuth = true;
-        $this->mailer->Username = 'ines.bougtaib@gmail.com';
-        $this->mailer->Password = 'llvi fzfr tuvf jugq';
+        $this->mailer->Username = $this->params->get('mailer_user');
+        $this->mailer->Password = $this->params->get('mailer_password');
         $this->mailer->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-        $this->mailer->Port = 587;
+        $this->mailer->Port = $this->params->get('mailer_port');
     }
 
     public function sendEmail(string $to, string $subject, string $htmlContent, string $from = 'no-reply@exemple.com', string $fromName = 'CnK Couture'): void
@@ -53,7 +55,6 @@ class EmailService
         $this->sendEmail($to, $subject, $htmlContent);
     }
 
-    // je peux ajouter d'autres méthodes pour différents types d'emails
     public function sendNewsletterEmail(string $to, string $subject, string $htmlContent): void
     {
         $this->sendEmail($to, $subject, $htmlContent, 'newsletter@exemple.com', 'Newsletter');

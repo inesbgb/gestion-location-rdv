@@ -9,9 +9,17 @@
     <p>Bonjour {{ rendezVous.prenom }} {{ rendezVous.nom }},</p>
     <p>Votre rendez-vous a été confirmé pour le {{ rendezVous.dateRdv|date('d/m/Y') }} à {{ rendezVous.heureRdv|date('H:i') }}.</p>
     <p><strong>Numéro de rendez-vous : {{ rendezVous.numRdv }}</strong></p>
-    <p>Merci de conserver ce numéro, il pourra vous être demandé lors de votre rendez-vous.</p>
-    <p>Merci de votre confiance.</p>
-    <p>Cordialement,</p>
-    <p>L'équipe de CnK Couture</p>
+    <p><strong>Important - Annulation ou modification de votre rendez-vous :</strong></p>
+    <ul>
+        <li>Vous pouvez annuler votre rendez-vous directement sur notre site web en utilisant votre numéro unique de rendez-vous ({{ rendezVous.numRdv }}) jusqu'à 24 heures avant la date et l'heure prévues.</li>
+        <li>Pour toute annulation ou modification à moins de 24 heures du rendez-vous, veuillez nous contacter sur WhatsApp au 07********.</li>
+    </ul>
+    <p>Détails du rendez-vous :</p>
+    <ul>
+        <li>Type d'événement : {{ rendezVous.typeEvenement }}</li>
+        <li>Date de l'événement : {{ rendezVous.dateEvenemnt|date('d/m/Y') }}</li>
+    </ul>
+    <p>Nous vous remercions de votre confiance et avons hâte de vous accueillir !</p>
+    <p>L'équipe de CNK Couture</p>
 </body>
 </html>

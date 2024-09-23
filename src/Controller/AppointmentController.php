@@ -119,7 +119,8 @@ public function annuler(Request $request, EntityManagerInterface $entityManager,
 
                 $this->addFlash('success', 'Le rendez-vous a été annulé et un email de confirmation a été envoyé.');
             } else {
-                $this->addFlash('error', 'Désolé, vous ne pouvez plus annuler ce rendez-vous sur notre site. L\'annulation doit être faite au moins 24 heures à l\'avance. Contactez nous sur whatsapp');
+                $this->addFlash('error', 'Désolé, vous ne pouvez plus annuler ce rendez-vous sur notre site. 
+                L\'annulation doit être faite au moins 24 heures à l\'avance. Contactez nous sur whatsapp');
             }
         } else {
             $this->addFlash('error', 'Numéro de rendez-vous invalide.');
@@ -135,35 +136,31 @@ public function annuler(Request $request, EntityManagerInterface $entityManager,
 
     
    
-    #[Route('/check-availability', name: 'check_availability')]
-    public function checkAvailability(Request $request, RendezVousRepository $rendezVousRepository): JsonResponse
-    {
-        // Récupère la date de la requête 
-        $dateStr = $request->query->get('date');
-        $date = new \DateTime($dateStr);
+#[Route('/check-availability', name: 'check_availability')]
+public function checkAvailability(Request $request, RendezVousRepository $rendezVousRepository): JsonResponse
+{
+    $dateStr = $request->query->get('date');
+    $date = new \DateTime($dateStr);
 
-        // Appelle la méthode findTakenSlots pour obtenir les créneaux horaires pris pour la date donnée
-        $takenSlots = $rendezVousRepository->findTakenSlots($date);
+    $takenSlots = $rendezVousRepository->findTakenSlots($date);
 
-        // mes créneaux possibles
-        $allSlots = [
-            '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00'
-        ];
+    $allSlots = ['10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00'];
 
-        // Convertit les créneaux horaires pris en un tableau simple
-        $takenTimes = array_map(function($slot) {
-            return (new \DateTime($slot['date_rdv']))->format('H:i');
-        }, $takenSlots);
+    $takenTimes = array_map(function($slot) {
+        if ($slot['heure_rdv'] instanceof \DateTimeInterface) {
+            return $slot['heure_rdv']->format('H:i');
+        } elseif (is_string($slot['heure_rdv'])) {
+           
+            return substr($slot['heure_rdv'], 0, 5);
+        }
+       
+        return '00:00';
+    }, $takenSlots);
 
-        // Filtre les créneaux horaires disponibles
-        $availableSlots = array_filter($allSlots, function($slot) use ($takenTimes) {
-            return !in_array($slot, $takenTimes);
-        });
+    $availableSlots = array_diff($allSlots, $takenTimes);
 
-        return new JsonResponse($availableSlots);
-    }
-
-
-
+   
+    return new JsonResponse(array_values($availableSlots));
+}
 
 }

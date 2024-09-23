@@ -29,44 +29,63 @@ class ProduitAdminController extends AbstractController
         $form = $this->createForm(SearchType::class, $searchData);
         $form->handleRequest($request);
 
-        // Récupération des produits selon les critères de recherche
         $produits = $produitRepository->findSearch($searchData);
 
-        // Boucle sur les produits pour déterminer leur disponibilité
-        foreach ($produits as $produit) {
-            // Utilise la méthode du repository pour déterminer la disponibilité
-            $isDisponible = $produitRepository->isProduitDisponible($produit, $searchData->dateDebut, $searchData->dateFin);
-            $produit->isDisponible = $isDisponible;
+      
+        $dateDebut = $searchData->dateDebut;
+        $dateFin = $searchData->dateFin;
+
+        // Calculer la disponibilité pour chaque produit
+        $disponibilites = [];
+        if ($dateDebut && $dateFin) {
+            foreach ($produits as $produit) {
+                $disponibilites[$produit->getId()] = $produitRepository->isProduitDisponible($produit, $dateDebut, $dateFin);
+            }
         }
 
         return $this->render('produit_admin/index.html.twig', [
             'produits' => $produits,
             'form' => $form->createView(),
+            'date_debut' => $dateDebut,
+            'date_fin' => $dateFin,
+            'disponibilites' => $disponibilites,
         ]);
     }
-#[Route('/admin/produit/{id}/toggle-disponibilite', name: 'app_produit_admin_toggle_disponibilite', methods: ['POST'])]
-public function toggleDisponibilite(Request $request, Produit $produit, EntityManagerInterface $entityManager): JsonResponse
-{
-    $data = json_decode($request->getContent(), true);
-    $dateDebut = $data['dateDebut'] ?? null;
-    $dateFin = $data['dateFin'] ?? null;
-    $reservationId = $data['reservationId'] ?? null;
-
-    if (!$reservationId) {
-        return new JsonResponse(['success' => false, 'message' => 'ID de réservation manquant'], 400);
+    #[Route('/disponibilite', name: 'app_produit_admin_disponibilite', methods: ['GET'])]
+    public function getDisponibilite(Request $request, ProduitRepository $produitRepository): JsonResponse
+    {
+        $dateDebut = new \DateTime($request->query->get('dateDebut'));
+        $dateFin = new \DateTime($request->query->get('dateFin'));
+    
+        $produits = $produitRepository->findAll();
+        $produitIds = array_map(fn($p) => $p->getId(), $produits);
+    
+        $disponibilites = $produitRepository->getDisponibilites($produitIds, $dateDebut, $dateFin);
+    
+        return new JsonResponse($disponibilites);
     }
 
-    $reservation = $entityManager->getRepository(Reservation::class)->find($reservationId);
-    if (!$reservation) {
-        return new JsonResponse(['success' => false, 'message' => 'Réservation non trouvée'], 404);
+    #[Route('/{id}/toggle-disponibilite', name: 'app_produit_admin_toggle_disponibilite', methods: ['POST'])]
+    public function toggleDisponibilite(Request $request, Produit $produit, EntityManagerInterface $entityManager): JsonResponse
+    {
+        $data = json_decode($request->getContent(), true);
+        $reservationId = $data['reservationId'] ?? null;
+
+        if (!$reservationId) {
+            return new JsonResponse(['success' => false, 'message' => 'ID de réservation manquant'], 400);
+        }
+
+        $reservation = $entityManager->getRepository(Reservation::class)->find($reservationId);
+        if (!$reservation) {
+            return new JsonResponse(['success' => false, 'message' => 'Réservation non trouvée'], 404);
+        }
+
+        $reservation->setRetour(true);
+        $produit->setStock(true);
+        $entityManager->flush();
+
+        return new JsonResponse(['success' => true]);
     }
-
-    $reservation->setRetour(true);
-    $produit->setStock(true);
-    $entityManager->flush();
-
-    return new JsonResponse(['success' => true]);
-}
     #[Route('/new', name: 'app_produit_admin_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {

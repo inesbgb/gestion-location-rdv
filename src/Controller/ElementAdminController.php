@@ -59,10 +59,10 @@ class ElementAdminController extends AbstractController
     {
         $form = $this->createForm(ElementAdminType::class, $elementAdmin);
         $form->handleRequest($request);
-
+    
         if ($form->isSubmitted() && $form->isValid()) {
-            $uploadFields = ['video', 'carouselImage1', 'carouselImage2', 'carouselImage3', 'imageHistoire'];
-
+            $uploadFields = ['mainImage', 'carouselImage1', 'carouselImage2', 'carouselImage3', 'imageHistoire'];
+    
             foreach ($uploadFields as $field) {
                 $file = $form->get($field)->getData();
                 if ($file) {
@@ -71,12 +71,12 @@ class ElementAdminController extends AbstractController
                     $elementAdmin->$setter($fileName);
                 }
             }
-
+    
             $entityManager->flush();
-
+    
             return $this->redirectToRoute('app_element_admin_index', [], Response::HTTP_SEE_OTHER);
         }
-
+    
         return $this->render('element_admin/edit.html.twig', [
             'element_admin' => $elementAdmin,
             'form' => $form,

@@ -6,10 +6,11 @@ use App\Entity\Produit;
 use App\Form\ProduitType;
 use App\Repository\ProduitRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 #[Route('/produit')]
 class ProduitController extends AbstractController
@@ -22,13 +23,22 @@ class ProduitController extends AbstractController
     //     ]);
     // }
     #[Route('/location', name: 'app_produit_location', methods: ['GET'])]
-public function produitsLocation(ProduitRepository $produitRepository): Response // a changer
-
+public function produitsLocation(ProduitRepository $produitRepository, PaginatorInterface $paginator, Request $request): Response
 {
-    $produitsLocation = $produitRepository->findBy(['liquidation' => false]);
+    $query = $produitRepository->createQueryBuilder('p')
+        ->where('p.liquidation = :liquidation')
+        ->setParameter('liquidation', false)
+        ->groupBy('p.designation')  // Groupe par désignation
+        ->getQuery();
+
+    $produits = $paginator->paginate(
+        $query,
+        $request->query->getInt('page', 1),
+        12 
+    );
 
     return $this->render('produit/location.html.twig', [
-        'produits' => $produitsLocation,
+        'produits' => $produits,
     ]);
 }
 
@@ -41,13 +51,17 @@ public function produitsLiquidation(ProduitRepository $produitRepository): Respo
         'produits' => $produitsEnLiquidation,
     ]);
 }
-    #[Route('/{id}', name: 'app_produit_show', methods: ['GET'])]
-    public function show(Produit $produit): Response
-    {
-        return $this->render('produit/show.html.twig', [
-            'produit' => $produit,
-        ]);
-    }
+#[Route('/{id}', name: 'app_produit_show', methods: ['GET'])]
+public function show(Produit $produit, ProduitRepository $produitRepository): Response
+{
+    // Récupère tous les produits avec la même désignation
+    $produitsMemeTaille = $produitRepository->findBy(['designation' => $produit->getDesignation()]);
+
+    return $this->render('produit/show.html.twig', [
+        'produit' => $produit,
+        'produitsMemeTaille' => $produitsMemeTaille,
+    ]);
+}
 
    
 

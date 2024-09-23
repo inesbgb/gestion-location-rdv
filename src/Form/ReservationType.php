@@ -12,7 +12,6 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\MoneyType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Validator\Constraints\GreaterThanOrEqual;
 
 class ReservationType extends AbstractType
@@ -40,7 +39,7 @@ class ReservationType extends AbstractType
         ->add('dateFin', DateType::class, [
             'widget' => 'single_text',
             'label' => 'Date de fin',
-            // ... autres options
+           
         ])
         ->add('clientEmail', EmailType::class, [
             'mapped' => false,

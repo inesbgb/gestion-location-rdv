@@ -19,23 +19,17 @@ class RendezVousRepository extends ServiceEntityRepository
      * @param \DateTimeInterface $date La date pour laquelle vérifier les créneaux horaires indisponibles.
      * @return array Les créneaux horaires indisponibles.
      */
-    public function findUnavailableSlots(\DateTimeInterface $date): array
-    {
-        
-        $qb = $this->createQueryBuilder('r')
-       
-            ->where('r.date_rdv BETWEEN :start AND :end')
-          
-            ->setParameter('start', $date->format('Y-m-d 00:00:00'))
-            ->setParameter('end', $date->format('Y-m-d 23:59:59'))
-          
-            ->select('r.date_rdv')
-         
-            ->getQuery();
-
-       
-        return $qb->getArrayResult();
-    }
+    public function findUnavailableSlots(\DateTimeInterface $dateTime): array
+{
+    return $this->createQueryBuilder('r')
+        ->select('r.heure_rdv')
+        ->where('r.date_rdv = :date')
+        ->andWhere('r.statut = :statut')
+        ->setParameter('date', $dateTime->format('Y-m-d'))
+        ->setParameter('statut', true)
+        ->getQuery()
+        ->getResult();
+}
     public function findAvailableSlots(\DateTimeInterface $date, array $allSlots): array
     {
       
@@ -56,19 +50,19 @@ class RendezVousRepository extends ServiceEntityRepository
 
 
 
-
     public function findTakenSlots(\DateTimeInterface $date): array
-    {
-        $qb = $this->createQueryBuilder('r')
-            ->select('r.date_rdv')
-            ->where('r.statut = :statut')
-            ->andWhere('r.date_rdv BETWEEN :start AND :end')
-            ->setParameter('statut', true)
-            ->setParameter('start', $date->format('Y-m-d 00:00:00'))
-            ->setParameter('end', $date->format('Y-m-d 23:59:59'));
-    
-        return $qb->getQuery()->getArrayResult();
-    }
+{
+    $dateString = $date->format('Y-m-d');
+
+    return $this->createQueryBuilder('r')
+        ->select('r.heure_rdv')
+        ->where('r.date_rdv = :date')
+        ->andWhere('r.statut = :statut')
+        ->setParameter('date', $dateString)
+        ->setParameter('statut', true)
+        ->getQuery()
+        ->getResult();
+}
     public function countTodayRdv(): int
     {
         $today = new \DateTime();
@@ -89,12 +83,12 @@ class RendezVousRepository extends ServiceEntityRepository
     public function findTodayRdv(): array
     {
         $today = new \DateTime();
-        $today->setTime(0, 0, 0);
+        $today->setTime(0, 0);
         $tomorrow = clone $today;
         $tomorrow->modify('+1 day');
-
+    
         return $this->createQueryBuilder('r')
-            ->where('r.date_rdv >= :today')
+            ->andWhere('r.date_rdv >= :today')
             ->andWhere('r.date_rdv < :tomorrow')
             ->setParameter('today', $today)
             ->setParameter('tomorrow', $tomorrow)

@@ -16,43 +16,66 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    const joursOuverts = {{ openDays|json_encode|raw }};
-    console.log('Jours Ouverts:', joursOuverts);
+    console.log('DOM chargé, initialisation du script');
 
-    function getDatesForOpenDays(openDays) {
-        const today = new Date();
-        const dates = [];
-
-        const dayMap = {
-            "dimanche": 0, "lundi": 1, "mardi": 2, "mercredi": 3,
-            "jeudi": 4, "vendredi": 5, "samedi": 6
-        };
-
-        for (let i = 0; i < 365; i++) { 
-            const date = new Date(today);
-            date.setDate(today.getDate() + i);
-            const dayName = Object.keys(dayMap).find(key => dayMap[key] === date.getDay());
-            if (openDays.includes(dayName)) {
-                dates.push(date);
-            }
-        }
-
-        return dates;
+    const dateRdvInput = document.getElementById('rendez_vous1_date_rdv');
+    if (!dateRdvInput) {
+        console.error("Le champ de date n'a pas été trouvé");
+        return;
     }
 
-    const enabledDates = getDatesForOpenDays(joursOuverts);
-
-    flatpickr("#rendez_vous1_date_rdv", {
+    console.log('Initialisation de Flatpickr');
+    const dateRdvPickr = flatpickr("#rendez_vous1_date_rdv", {
         dateFormat: "Y-m-d",
-        enable: enabledDates
+        onChange: function(selectedDates, dateStr, instance) {
+            console.log('Date sélectionnée:', dateStr);
+            updateAvailableHours(dateStr);
+        }
     });
 
+    function updateAvailableHours(selectedDate) {
+        console.log('Mise à jour des heures disponibles pour la date:', selectedDate);
+        const hoursSelect = document.getElementById('rendez_vous1_heure_rdv_hour');
+        if (!hoursSelect) {
+            console.error("L'élément select des heures n'a pas été trouvé");
+            return;
+        }
+        hoursSelect.innerHTML = '<option>Chargement...</option>';
 
+        console.log('Envoi de la requête AJAX');
+        fetch(`/admin/appointment/available-hours/${selectedDate}`)
+            .then(response => {
+                console.log('Réponse reçue, statut:', response.status);
+                return response.json();
+            })
+            .then(data => {
+                console.log('Données reçues:', data);
+                if (!data.allHours || !data.takenHours) {
+                    console.error('Les données reçues ne sont pas dans le format attendu');
+                    return;
+                }
+                const availableHours = data.allHours.filter(hour => !data.takenHours.includes(hour));
+                console.log('Heures disponibles:', availableHours);
+                hoursSelect.innerHTML = '';
+                availableHours.forEach(hour => {
+                    const option = document.createElement('option');
+                    option.value = hour;
+                    option.textContent = hour.toString().padStart(2, '0') + ':00';
+                    hoursSelect.appendChild(option);
+                });
+                console.log('Mise à jour du select terminée');
+            })
+            .catch(error => console.error('Erreur lors de la requête:', error));
+    }
 
-    flatpickr("#rendez_vous1_date_evenemnt", {
-        enableTime: true,
-        dateFormat: "Y-m-d H:i",
-    });
+    // Initialiser les heures disponibles au chargement de la page si une date est déjà sélectionnée
+    const initialDate = dateRdvPickr.selectedDates[0];
+    if (initialDate) {
+        console.log('Date initiale trouvée:', initialDate);
+        updateAvailableHours(initialDate.toISOString().split('T')[0]);
+    } else {
+        console.log('Aucune date initiale');
+    }
 });
 </script>
 {% endblock %}

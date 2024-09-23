@@ -7,7 +7,8 @@
         
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
             <!-- Rendez-vous du jour -->
-            <div class="bg-white p-6 rounded-lg shadow-md hover:bg-gray-50 transition-colors duration-200 cursor-pointer" onclick="toggleRdvDetails()">
+            <div class="bg-white p-6 rounded-lg shadow-md
+             hover:bg-gray-50 transition-colors duration-200 cursor-pointer" onclick="toggleRdvDetails()">
                 <h3 class="text-xl font-semibold mb-2">Rendez-vous aujourd'hui</h3>
                 <p class="text-3xl font-bold">{{ rdvCount }}</p>
             </div>
@@ -41,31 +42,37 @@
                         <tr>
                             <th class="text-left py-2">Heure</th>
                             <th class="text-left py-2">Client</th>
-                            <th class="text-left py-2">Type</th>
+                            <th class="text-left py-2">Téléphone</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for rdv in rdvs %}
                         <tr>
-                            <td class="py-2">{{ rdv.heureRdv|date('H:i') }}</td>
-                            <td class="py-2">{{ rdv.prenom }} {{ rdv.nom }}</td>
-                            <td class="py-2">{{ rdv.typeEvenement }}</td>
-                        </tr>
+        <td class="py-2">{{ rdv.heureRdv|date('H:i') }}</td>
+        <td class="py-2">{{ rdv.client.prenom }} {{ rdv.client.nom }}</td>
+        <td class="py-2">{{ rdv.client.telephone }}</td>
+    </tr>
                         {% endfor %}
                     </tbody>
                 </table>
             </div>
         </div>
-  
 {% endblock %}
 
 {% block javascripts %}
     {{ parent() }}
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            renderRevenueChart();
-        });
+            const rdvCounter = document.getElementById('rdvCounter');
+            const rdvDetails = document.getElementById('rdvDetails');
 
-        
+            rdvCounter.addEventListener('click', function() {
+                if (rdvDetails.classList.contains('hidden')) {
+                    rdvDetails.classList.remove('hidden');
+                } else {
+                    rdvDetails.classList.add('hidden');
+                }
+            });
+        });
     </script>
 {% endblock %}

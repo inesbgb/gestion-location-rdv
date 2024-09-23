@@ -37,8 +37,9 @@ class RendezVous1Type extends AbstractType
         ->add('heure_rdv', TimeType::class, [
             'widget' => 'choice',
             'label' => 'Heure du rendez-vous',
-            'hours' => range(10, 19), // Heures de 10h à 19h
-            'minutes' => [0], // Seulement les minutes 00
+            'hours' => range(10, 19), 
+            'minutes' => [0],
+            'attr' => ['class' => 'heure-rdv-select']
         ])
         ->add('statut', ChoiceType::class, [
             'label' => 'Statut',

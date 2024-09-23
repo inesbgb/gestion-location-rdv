@@ -7,32 +7,26 @@ use App\Repository\RendezVousRepository;
 use App\Repository\ReservationRepository;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use App\Controller\AdminBaseController; // Assurez-vous que cette ligne est correcte
+use App\Controller\AdminBaseController;
 
 #[Route('/admin')]
 class AdminController extends AdminBaseController
-{  #[Route('/', name: 'app_admin')]
+{
+    #[Route('/', name: 'app_admin')]
     public function index(
         RendezVousRepository $rdvRepo,
         ClientRepository $clientRepo,
         ReservationRepository $reservationRepo
     ): Response {
+        $currentMonth = new \DateTime('first day of this month');
+        $monthStart = $currentMonth->format('Y-m-01');
+        $monthEnd = $currentMonth->format('Y-m-t');
+
         $chartData = [
-            'labels' => [],
-            'revenues' => [],
-            'reservations' => []
+            'labels' => [$currentMonth->format('M Y')],
+            'revenues' => [$reservationRepo->getRevenueForPeriod($monthStart, $monthEnd)],
+            'reservations' => [$reservationRepo->getReservationsCountForPeriod($monthStart, $monthEnd)]
         ];
-        
-        // Récupérez les données des 12 derniers mois
-        for ($i = 11; $i >= 0; $i--) {
-            $date = new \DateTime("-$i months");
-            $monthStart = $date->format('Y-m-01');
-            $monthEnd = $date->format('Y-m-t');
-            
-            $chartData['labels'][] = $date->format('M Y');
-            $chartData['revenues'][] = $reservationRepo->getRevenueForPeriod($monthStart, $monthEnd);
-            $chartData['reservations'][] = $reservationRepo->getReservationsCountForPeriod($monthStart, $monthEnd);
-        }
 
         return $this->render('admin/index.html.twig', [
             'rdvCount' => $rdvRepo->countTodayRdv(),

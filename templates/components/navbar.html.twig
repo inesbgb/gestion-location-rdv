@@ -1,10 +1,36 @@
-<nav class="fixed top-0 left-0 w-full bg-black bg-opacity-75 p-6 shadow-lg backdrop-filter backdrop-blur-lg border border-opacity-18 border-white" style="box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37); -webkit-backdrop-filter: blur(2.5px); backdrop-filter: blur(2.5px); border-radius: 10px;">
+<nav class="nav-links fixed z-50 top-0 left-0 w-full bg-black bg-opacity-75 p-6 shadow-lg backdrop-filter backdrop-blur-lg border border-opacity-18 border-white" style="box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37); -webkit-backdrop-filter: blur(2.5px); backdrop-filter: blur(2.5px); border-radius: 10px;">
   <div class="container mx-auto flex justify-between items-center">
     <a href="/" class="text-white text-3xl font-bold hover:text-gold">CnK Couture</a>
-    <ul class="flex space-x-6 text-lg">
+    
+    <!-- Menu pour desktop -->
+    <ul class="nav-links-desktop hidden md:flex space-x-6 text-lg">
       <li><a href="#" class="text-white hover:text-gold">Histoire CnK</a></li>
       <li><a href="{{ path('app_produit_location') }}" class="text-white hover:text-gold">Location</a></li>
       <li><a href="{{ path('app_produit_liquidation') }}" class="text-white hover:text-gold">Liquidation</a></li>
     </ul>
+    
+    <!-- Bouton hamburger pour mobile -->
+    <div class="md:hidden">
+      <ion-icon id="menu-toggle" name="menu" class="text-3xl cursor-pointer text-white"></ion-icon>
+    </div>
+  </div>
+  
+  <!-- Menu mobile -->
+  <div id="mobile-menu" class="hidden mt-4 w-full">
+    <ul class="flex flex-col space-y-4 items-center w-9/12 mx-auto">
+      <li><a href="#" class="text-white hover:text-gold block border-b border-white">Histoire CnK</a></li>
+      <li><a href="{{ path('app_produit_location') }}" class="text-white hover:text-gold block border-b border-white">Location</a></li>
+      <li><a href="{{ path('app_produit_liquidation') }}" class="text-white hover:text-gold block border-b border-white">Liquidation</a></li>
+    </ul>
   </div>
 </nav>
+
+<script>
+  const menuToggle = document.getElementById('menu-toggle');
+  const mobileMenu = document.getElementById('mobile-menu');
+
+  menuToggle.addEventListener('click', function() {
+    mobileMenu.classList.toggle('hidden');
+    this.name = this.name === 'menu' ? 'close' : 'menu';
+  });
+</script>

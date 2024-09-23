@@ -14,21 +14,11 @@ class ElementAdminType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('video', FileType::class, [
-                'label' => 'Vidéo d\'accueil',
-                'mapped' => false,
-                'required' => false,
-                'constraints' => [
-                    new File([
-                        'maxSize' => '100M',
-                        'mimeTypes' => [
-                            'video/mp4',
-                            'video/quicktime',
-                        ],
-                        'mimeTypesMessage' => 'Veuillez uploader un fichier vidéo valide',
-                    ])
-                ],
-            ])
+        ->add('mainImage', FileType::class, [
+            'label' => 'Image principale',
+            'required' => false,
+            'mapped' => false,
+        ])
             ->add('carouselImage1', FileType::class, [
                 'label' => 'Image carrousel 1',
                 'mapped' => false,

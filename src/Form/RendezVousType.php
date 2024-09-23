@@ -33,19 +33,11 @@ class RendezVousType extends AbstractType
                     ]),
                 ],
             ])
-            ->add('heure_rdv', TimeType::class, [
-                'widget' => 'choice',
-                'hours' => range(10, 19),
-                'minutes' => [0], 
-                'label' => 'Heure du rendez-vous',
-                'attr' => [
-                    'id' => 'heure_rdv', 
-                ],
-                'constraints' => [
-                    new NotBlank([
-                        'message' => 'L\'heure du rendez-vous est obligatoire.',
-                    ]),
-                ],
+            ->add('heure_rdv', ChoiceType::class, [
+                'choices' => [],
+                'placeholder' => 'Choisissez une heure',
+                'required' => true,
+                'mapped' => false,
             ])
             ->add('email', EmailType::class, [
                 'label' => 'Email',

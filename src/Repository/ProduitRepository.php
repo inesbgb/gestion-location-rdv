@@ -30,18 +30,22 @@ class ProduitRepository extends ServiceEntityRepository
             return $produit->isStock();
         }
 
-        // Si des dates sont fournies, on vérifie les réservations
-        foreach ($produit->getReservations() as $reservation) {
-            // Si la réservation chevauche la période demandée et que le produit n'a pas été retourné
-            if ($reservation->getDateDebut() <= $dateFin &&
-                $reservation->getDateFin() >= $dateDebut &&
-                !$reservation->isRetour()) {
-                return false;
-            }
-        }
+        // Vérifier s'il y a des réservations qui chevauchent la période demandée
+        $qb = $this->createQueryBuilder('p')
+            ->select('COUNT(r.id)')
+            ->leftJoin('p.reservations', 'r')
+            ->where('p.id = :produitId')
+            ->andWhere('r.dateDebut <= :dateFin')
+            ->andWhere('r.dateFin >= :dateDebut')
+            ->andWhere('r.retour = false')
+            ->setParameter('produitId', $produit->getId())
+            ->setParameter('dateDebut', $dateDebut)
+            ->setParameter('dateFin', $dateFin);
 
-        // Si aucune réservation ne bloque, le produit est disponible
-        return true;
+        $count = $qb->getQuery()->getSingleScalarResult();
+
+        // Le produit est disponible s'il n'y a pas de réservations chevauchantes
+        return $count == 0 && $produit->isStock();
     }
     public function findSearch(SearchData $searchData): PaginationInterface
 {
@@ -82,27 +86,24 @@ class ProduitRepository extends ServiceEntityRepository
 
     if ($searchData->dateDebut instanceof DateTime && $searchData->dateFin instanceof DateTime) {
         $query->leftJoin('p.reservations', 'res', Join::WITH, 
-            '(res.dateDebut <= :dateFin AND res.dateFin >= :dateDebut) OR 
-             (res.dateDebut >= :dateDebut AND res.dateDebut <= :dateFin) OR
-             (res.dateFin >= :dateDebut AND res.dateFin <= :dateFin)')
+            '(res.dateDebut <= :dateFin AND res.dateFin >= :dateDebut AND res.retour = false)')
             ->setParameter('dateDebut', $searchData->dateDebut->format('Y-m-d'))
             ->setParameter('dateFin', $searchData->dateFin->format('Y-m-d'));
 
         if ($searchData->stock !== null) {
             if ($searchData->stock) {
                 // Robes disponibles pour la période
-                $query->andWhere('res.id IS NULL');
+                $query->andWhere('res.id IS NULL AND p.stock = true');
             } else {
                 // Robes indisponibles pour la période
-                $query->andWhere('res.id IS NOT NULL');
+                $query->andWhere('res.id IS NOT NULL OR p.stock = false');
             }
         }
     } elseif ($searchData->stock !== null) {
-        // Si pas de période spécifiée, on utilise juste le champ stock
+        // Si pas de période spécifiée, j'utilise juste le champ stock
         $query->andWhere('p.stock = :stock')
             ->setParameter('stock', $searchData->stock);
     }
-
 
     if ($searchData->stock !== null) {
         if ($searchData->dateDebut && $searchData->dateFin) {
@@ -144,6 +145,28 @@ class ProduitRepository extends ServiceEntityRepository
         $searchData->page,
         10 // Nombre d'éléments par page
     );
+    }
+    public function getDisponibilites(array $produitIds, ?\DateTimeInterface $dateDebut, ?\DateTimeInterface $dateFin): array
+    {
+        $qb = $this->createQueryBuilder('p')
+            ->select('p.id', 'CASE WHEN COUNT(r.id) = 0 AND p.stock = true THEN true ELSE false END as isDisponible')
+            ->leftJoin('p.reservations', 'r', Join::WITH, 
+                'r.dateDebut <= :dateFin AND r.dateFin >= :dateDebut AND r.retour = false')
+            ->where('p.id IN (:produitIds)')
+            ->groupBy('p.id')
+            ->setParameter('produitIds', $produitIds)
+            ->setParameter('dateDebut', $dateDebut)
+            ->setParameter('dateFin', $dateFin);
+
+        $result = $qb->getQuery()->getResult();
+
+        // Convertir le résultat en tableau associatif
+        $disponibilites = [];
+        foreach ($result as $row) {
+            $disponibilites[$row['id']] = (bool) $row['isDisponible'];
+        }
+
+        return $disponibilites;
     }
 //    /**
 //     * @return Produit[] Returns an array of Produit objects

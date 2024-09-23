@@ -4,14 +4,12 @@ namespace App\Controller;
 
 use App\Entity\Client;
 use App\Form\ClientType;
-use Psr\Log\LoggerInterface;
 use App\Service\EmailService;
 use App\Repository\ClientRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 #[Route('/client')]

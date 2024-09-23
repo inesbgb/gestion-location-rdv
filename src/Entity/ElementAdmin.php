@@ -14,7 +14,7 @@ class ElementAdmin
     private ?int $id = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    private ?string $video = null;
+    private ?string $mainImage = null;
 
     #[ORM\Column(length: 255)]
     private ?string $carouselImage1 = null;
@@ -33,15 +33,14 @@ class ElementAdmin
         return $this->id;
     }
 
-    public function getVideo(): ?string
+    public function getMainImage(): ?string
     {
-        return $this->video;
+        return $this->mainImage;
     }
-
-    public function setVideo(string $video): static
+    
+    public function setMainImage(?string $mainImage): self
     {
-        $this->video = $video;
-
+        $this->mainImage = $mainImage;
         return $this;
     }
 
