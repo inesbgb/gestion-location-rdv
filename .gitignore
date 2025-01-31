@@ -75,3 +75,6 @@
 /public/assets/
 /assets/vendor/
 ###< symfony/asset-mapper ###
+
+# Node modules
+node_modules/
