@@ -2,9 +2,10 @@
 
 namespace App\Repository;
 
+use App\Entity\Horaire;
 use App\Entity\RendezVous;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
 class RendezVousRepository extends ServiceEntityRepository
 {
@@ -19,34 +20,55 @@ class RendezVousRepository extends ServiceEntityRepository
      * @param \DateTimeInterface $date La date pour laquelle vérifier les créneaux horaires indisponibles.
      * @return array Les créneaux horaires indisponibles.
      */
-    public function findUnavailableSlots(\DateTimeInterface $dateTime): array
+    public function findUnavailableSlots(\DateTimeInterface $date): array
 {
-    return $this->createQueryBuilder('r')
+    $qb = $this->createQueryBuilder('r')
         ->select('r.heure_rdv')
         ->where('r.date_rdv = :date')
-        ->andWhere('r.statut = :statut')
-        ->setParameter('date', $dateTime->format('Y-m-d'))
-        ->setParameter('statut', true)
-        ->getQuery()
-        ->getResult();
+        ->setParameter('date', $date->format('Y-m-d'));
+
+    $query = $qb->getQuery();
+ 
+
+    $results = $query->getResult();
+    
+    // Convertir les résultats en un tableau de chaînes de créneaux horaires
+    return array_map(function ($result) {
+        return $result['heure_rdv']->format('H:i:s');
+    }, $results);
 }
-    public function findAvailableSlots(\DateTimeInterface $date, array $allSlots): array
-    {
-      
-        $unavailableSlots = $this->findUnavailableSlots($date);
+
+
+
+
+public function findAvailableSlots(\DateTimeInterface $date): array
+{
+    // Récupérer tous les créneaux horaires possibles depuis la table Horaire
+    $allSlots = $this->getEntityManager()
+        ->getRepository(Horaire::class)
+        ->findAll();
+
     
-        
-        $unavailableTimes = array_map(function($slot) {
-            return $slot['date_rdv'];
-        }, $unavailableSlots);
+
+    // Convertir les objets Horaire en un tableau de chaînes de créneaux horaires
+    $allSlotTimes = array_map(function ($horaire) {
+        return $horaire->getSlot()->format('H:i:s');
+    }, $allSlots);
+
+ 
+
+    // Récupérer les créneaux horaires indisponibles pour la date donnée
+    $unavailableSlots = $this->findUnavailableSlots($date);
     
-      
-        $availableSlots = array_filter($allSlots, function($slot) use ($unavailableTimes) {
-            return !in_array($slot, $unavailableTimes);
-        });
+    // Filtrer les créneaux horaires disponibles
+    $availableSlots = array_filter($allSlotTimes, function ($slot) use ($unavailableSlots) {
+        return !in_array($slot, $unavailableSlots);
+    });
+
     
-        return $availableSlots;
-    }
+
+    return $availableSlots;
+}
 
 
 

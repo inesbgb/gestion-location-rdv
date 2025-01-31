@@ -14,7 +14,7 @@ class RendezVous
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTimeInterface $date_rdv = null;
 
     #[ORM\Column(type: Types::TIME_MUTABLE)]
@@ -198,4 +198,22 @@ class RendezVous
 
         return $this;
     }
+
+    /**
+        * @ORM\ManyToOne(targetEntity="App\Entity\Client")
+        * @ORM\JoinColumn(nullable=false)
+        */
+        private $client;
+
+        public function getClient(): ?Client
+        {
+            return $this->client;
+        }
+ 
+        public function setClient(?Client $client): self
+        {
+            $this->client = $client;
+ 
+            return $this;
+        }
 }

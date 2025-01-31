@@ -7,18 +7,34 @@
     "test": "tests"
   },
   "scripts": {
+    "clean": "rm -rf public/build",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "tailwindcss -i ./assets/styles/input.css -o ./assets/styles/output.css --watch"
+    "dev": "webpack --mode development",
+    "build": "webpack --mode development",
+    "build:css": "tailwindcss -i ./src/styles/app.css -o ./public/build/tailwind.css --watch",
+    "build:hero-animation": "webpack --mode production --entry ./assets/hero-animation.js --output ./public/build/hero-animation.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "autoprefixer": "^10.4.19",
-    "chart.js": "^4.4.4",
-    "postcss": "^8.4.38"
+    "chart.js": "^4.4.6"
   },
   "devDependencies": {
-    "tailwindcss": "^3.4.4"
+    "@babel/core": "^7.26.0",
+    "@babel/preset-env": "^7.26.0",
+    "autoprefixer": "^10.4.20",
+    "babel-loader": "^9.2.1",
+    "css-loader": "^7.1.2",
+    "css-minimizer-webpack-plugin": "^7.0.0",
+    "eslint": "^9.18.0",
+    "mini-css-extract-plugin": "^2.9.2",
+    "postcss": "^8.4.49",
+    "postcss-loader": "^8.1.1",
+    "style-loader": "^4.0.0",
+    "tailwindcss": "^3.4.17",
+    "terser-webpack-plugin": "^5.3.11",
+    "webpack": "^5.97.1",
+    "webpack-cli": "^5.1.4"
   }
 }

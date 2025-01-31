@@ -3,20 +3,22 @@
 {% block title %}Produit{% endblock %}
 
 {% block body %}
-<div class="container mx-auto px-4 pt-24 sm:pt-24">
+<div class="container mx-auto px-4 pt-24 sm:pt-24 mt-10 mb-12">
     <h1 class="text-4xl font-bold mb-8 text-center">{{ produit.designation }}</h1>
 
     <div class="max-w-2xl mx-auto bg-white shadow-lg rounded-lg overflow-hidden">
         <div class="flex flex-col md:flex-row">
             <div class="md:w-1/2">
-                {% if produit.imageUrl %}
-                    <img src="{{ produit.imageUrl }}" alt="{{ produit.designation }}" class="w-full h-auto object-cover">
-                {% else %}
-                    <div class="w-full h-64 flex items-center justify-center bg-gray-200">
-                        No image
-                    </div>
-                {% endif %}
-            </div>
+    {% if produit.imageUrl %}
+        <a href="{{ produit.imageUrl }}" data-fancybox="gallery">
+            <img src="{{ produit.imageUrl }}" alt="{{ produit.designation }}" class="w-full h-auto object-cover">
+        </a>
+    {% else %}
+        <div class="w-full h-64 flex items-center justify-center bg-gray-200">
+            No image
+        </div>
+    {% endif %}
+</div>
             <div class="md:w-1/2 p-6">
                 <h2 class="text-2xl font-bold mb-4">{{ produit.designation }}</h2>
                 <p class="text-gray-700 mb-4">{{ produit.description }}</p>
@@ -32,7 +34,7 @@
     </div>
 
     <div class="mt-8 text-center">
-        <a href="{{ path('app_produit_location') }}" class="inline-block bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700 transition duration-300">Retour à la liste</a>
-    </div>
+    <a href="{{ path('app_produit_location') }}" class="inline-block bg-white text-gray-800 px-4 py-2 rounded border custom-border-gold transition duration-300 transform hover:scale-105" style="border-color: #B8860B;">Retour à la liste</a>
+</div>
 </div>
 {% endblock %}

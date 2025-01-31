@@ -4,64 +4,137 @@
   Accueil
 {% endblock %}
 
-{% block body %}
-  <div class="pt-24">
-    <div class="container px-3 mx-auto flex flex-wrap flex-col md:flex-row items-center">
-      <!-- Colonne de gauche -->
-      <div class="flex flex-col w-full md:w-2/5 justify-center items-start text-center md:text-left">
-        <p class="uppercase tracking-loose w-full">
-          Découvrez notre collection
-        </p>
-        <h1 class="my-4 text-5xl font-bold leading-tight">
-          Louez ou achetez la robe parfaite
-        </h1>
-        <p class="leading-normal text-2xl mb-8">
-          Découvrez notre collection exclusive de robes pour invités et mariées.
-          Prenez rendez-vous dès maintenant pour louer la robe parfaite pour
-          votre événement ou pour acheter une robe de mariée sur mesure, conçue
-          selon vos envies.
-        </p>
-        <a href="{{ path('app_appointment') }}"
-          class="mx-auto lg:mx-0 hover:underline bg-gold text-white text-2xl font-bold rounded-full my-6 py-6 px-10 shadow-lg focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out">
-          Prendre Rendez-vous
-        </a>
-      </div>
-      <!-- Colonne de droite -->
-       <div class="w-full md:w-3/5 py-6 text-center">
-        {% if elementAdmin and elementAdmin.mainImage %}
-          <img src="{{ asset('uploads/' ~ elementAdmin.mainImage) }}" alt="Image principale" class="w-full md:w-4/5 mx-auto rounded-lg shadow-lg">
-        {% else %}
-          <div class="w-full md:w-4/5 h-64 mx-auto bg-gray-200 rounded-lg shadow-lg flex items-center justify-center">
-            <span class="text-gray-500">Image non disponible</span>
-          </div>
-        {% endif %}
-      </div>
+{% block body %}   
+ 
+<div class="hero-section">
+   {% set video = attribute(elementAdmin, 'videoFilename') %}
+{% if video is not empty %}
+<video id="background-video" data-src="{{ asset('uploads/videos/' ~ video) }}" autoplay muted loop>
+    <source data-src="{{ asset('uploads/videos/' ~ video) }}" type="video/mp4">
+    Votre navigateur ne supporte pas la vidéo HTML5.
+</video>
+{% endif %}
+    <div class="absolute top-0 w-full text-center bg-white bg-opacity-50 text-black py-2 overflow-hidden gradient-background">
+        <div class="marquee-wrapper">
+            <div class="marquee">
+                <span class="accroche inline-block text-lg">
+                    Louez ou achetez la robe parfaite - Découvrez notre collection exclusive de robes pour invités et mariées. Vous rêvez de votre robe de mariée sur mesure ? Avec nous, c'est possible ! Prenez rendez-vous dès maintenant en cliquant sur le bouton ci-dessous.
+                </span>
+                <span class="accroche inline-block text-lg">
+                    Louez ou achetez la robe parfaite - Découvrez notre collection exclusive de robes pour invités et mariées. Vous rêvez de votre robe de mariée sur mesure ? Avec nous, c'est possible ! Prenez rendez-vous dès maintenant en cliquant sur le bouton ci-dessous.
+                </span>
+            </div>
+        </div>
     </div>
-  </div>
-  <!-- Section Nouvelle Collection -->
-  <div class="pt-24">
+    <a href="{{ path('app_appointment') }}" class="button">
+       Prendre Rendez-vous
+    </a>
+</div>
+ <!-- Section Nouvelle Collection -->
+<div class="pt-16">
   <div class="container px-3 mx-auto">
-    <h2 class="text-4xl font-bold text-center mb-8">
-      Nouvelle Collection de Robes à Louer
+    <h2 class="text-4xl font-bold text-center text-black mb-12">
+     Nouvelle Collection de Robes à Louer
     </h2>
-    <div class="relative">
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {% for i in 1..3 %}
-          {% set carouselImage = attribute(elementAdmin, 'carouselImage' ~ i) %}
-          <div class="w-full h-96 bg-gray-800 rounded-lg shadow-lg">
-            {% if carouselImage %}
-              <img src="{{ asset('uploads/' ~ carouselImage) }}"
-                alt="Robe {{ i }}"
-                class="w-full h-full object-cover rounded-lg" />
+    <div class="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <!-- Le carrousel -->
+       <div class="swiper mySwiper">
+        <div class="swiper-wrapper">
+          {% for i in 1..6 %}
+          <div class="swiper-slide flex justify-center items-center">
+            {% set produit = attribute(elementAdmin, 'carouselImage' ~ i) %}
+            {% if produit and produit.getImageName is not empty %}
+            <a href="{{ path('app_produit_show', {'id': produit.id}) }}" class="flex justify-center items-center">
+              <div class="carousel-image-container">
+                <img src="{{ asset('images/produit/' ~ produit.getImageName) }}" 
+                alt="Carousel Image {{ i }}" 
+                class="carousel-image">
+              </div>
+            </a>
             {% else %}
-              <div class="w-full h-full bg-gray-200 flex items-center justify-center rounded-lg">
-                <span class="text-gray-500">Image non disponible</span>
+              <div class="carousel-placeholder">
+                <span class="text-gray-500 text-lg">Image {{ i }}</span>
               </div>
             {% endif %}
           </div>
-        {% endfor %}
+          {% endfor %}
+        </div>
       </div>
     </div>
   </div>
 </div>
+
+<div class="py-10 custom-margin-top">
+    <h2 class="text-center text-3xl font-bold text-black mb-8">Avis Clients</h2>
+    <div class="relative mx-auto max-w-7xl px-8">
+        <div class="swiper mySwiper">
+            <div class="swiper-wrapper flex">
+                {% for avisClient in avisClients %}
+                <div class="swiper-slide bg-white p-6 shadow-lg mx-2 flex-shrink-0 client-review-slide w-1/3">
+                    <div class="flex items-center justify-center h-full text-center">
+                        <div>
+                            <div class="text-gold mb-2">★★★★★</div>
+                            <h3 class="font-bold text-lg">{{ avisClient.prenom }}</h3>
+                            <p class="text-gray-700 mt-2">
+                                {{ avisClient.commentaire }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                {% else %}
+                <div class="swiper-slide bg-white p-6 shadow-lg mx-2 flex-shrink-0 client-review-slide client-review-slide-empty w-1/3">
+                    <div class="flex items-center justify-center h-full text-center">
+                        <p class="text-gold-700 mt-2">Aucun avis client disponible pour le moment.</p>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            <div style="height: 20px;"></div>
+        </div>
+    </div>
+</div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const video = document.getElementById('background-video');
+    const content = document.getElementById('hero-content');
+
+    if (video) {
+        // Utilisation de l'Intersection Observer pour le lazy loading
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    video.src = video.dataset.src;
+                    video.load();
+                    observer.unobserve(video);
+                }
+            });
+        });
+
+        observer.observe(video);
+
+        video.addEventListener('loadeddata', function() {
+            const canvas = document.createElement('canvas');
+            const context = canvas.getContext('2d');
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+            const frame = context.getImageData(0, 0, canvas.width, canvas.height);
+            const length = frame.data.length;
+            let totalBrightness = 0;
+
+            for (let i = 0; i < length; i += 4) {
+                const r = frame.data[i];
+                const g = frame.data[i + 1];
+                const b = frame.data[i + 2];
+                const brightness = (r + g + b) / 3;
+                totalBrightness += brightness;
+            }
+
+            const averageBrightness = totalBrightness / (length / 4);
+            content.style.color = averageBrightness < 128 ? 'white' : 'black';
+        });
+    }
+});
+</script>
 {% endblock %}

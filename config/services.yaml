@@ -8,6 +8,9 @@ parameters:
     mailer_user: '%env(MAILER_USER)%'
     mailer_password: '%env(MAILER_PASSWORD)%'
     mailer_port: '%env(int:MAILER_PORT)%'
+    upload_max_size: 100M
+    upload_directory: '%kernel.project_dir%/public/uploads'
+    videos_directory: '%kernel.project_dir%/public/uploads/videos'
 
 services:
     # default configuration for services in *this* file

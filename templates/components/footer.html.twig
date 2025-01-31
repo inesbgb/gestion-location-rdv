@@ -1,23 +1,68 @@
-<footer class="footer mt-auto py-3 bg-light" align="center">
-    <div class="container">
-        <p>&copy; {{ "now"|date("Y") }} CNK Couture. Tous droits réservés.</p>
-        <div class="footer-links">
-            <a href="{{ path('app_mentions_legales') }}">Mentions Légales</a>
-            <a href="{{ path('app_conditions_vente') }}">Conditions de Vente</a>
-        </div>
-    </div>
-</footer>
+<footer class="bg-black text-white  mt-auto bg-light">
+    <div class="container-footer"> <!-- Ajout de max-w-7xl et px-4 -->
+                    <!-- La boutique -->
+            <div class="bloc footer-contact">
+    <h3>Contact</h3>
+    <p>
+        <a href="https://www.google.com/maps/search/?api=1&query=54+Rue+du+Dauphiné+69003+Lyon" target="_blank" class="contact-link custom-hover ">
+            54 Rue du Dauphiné 69003 Lyon
+        </a>
+    </p>
+    <p>
+        <a href="tel:+33123456789" class="contact-link custom-hover">
+            Tél : 01 23 45 67 89
+        </a>
+    </p>
+    <p>
+        <a href="https://www.google.com/search?q=CNK+Couture+Lyon" target="_blank" class="contact-link custom-hover">
+            Horaires : Lundi - Samedi : 10h - 20h
+        </a>
+    </p>
+</div>
+           
+           
+        <!-- Réseaux sociaux -->
+           <div class="bloc footer-reseaux">
+                <h3>Nos Réseaux</h3>
+                <ul class="liste-reseaux">
+                    <li>
+                        <a href="https://www.instagram.com/votrecompte" target="_blank" class="social-link custom-hover">
+                            <img src="/images/icon/instagram-icon.png" alt="Instagram" class="social-icon">
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://www.tiktok.com/@cnkcouture" target="_blank" class="social-link custom-hover">
+                            <img src="/images/icon/tiktok-icon.png" alt="TikTok" class="social-icon">
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://www.snapchat.com/add/votrecompte" target="_blank" class="social-link custom-hover">
+                            <img src="/images/icon/snapchat-icon.png" alt="Snapchat" class="social-icon">
+                        </a>
+                    </li>
+                     <li>
+                        <a href="mailto:contact@cnk-couture.fr" class="social-link custom-hover">
+                            <img src="/images/icon/email-icon.png" alt="Email" class="social-icon">
+                         </a>
+                     </li>
+                </ul>
+            </div>
 
+        
+        
+    </div>
+<div class="foot-page text-center py-4">
+    <div class="footer-liens-centres flex justify-center space-x-4 mb-4">
+        <a href="{{ path('app_mentions_legales') }}" class="custom-hover hover:underline">Mentions Légales</a>
+        <span>|</span>
+        <a href="{{ path('app_conditions_vente') }}" class="custom-hover hover:underline">Conditions de Vente</a>
+    </div>
+    <p class="copyright border-t border-gray-200 pt-6">&copy; {{ "now"|date("Y") }} CNK Couture. Tous droits réservés.</p>
+</div>
+</footer>
 <style>
-    .footer-links {
-        margin-top: 10px;
-    }
-    .footer-links a {
-        margin: 0 10px;
-        color: #6c757d;
-        text-decoration: none;
-    }
-    .footer-links a:hover {
-        text-decoration: underline;
-    }
+
+
+
+
 </style>

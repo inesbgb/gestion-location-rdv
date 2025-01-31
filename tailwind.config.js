@@ -8,6 +8,7 @@ module.exports = {
     extend:  {
       colors: {
         gold: '#ECC440',
+        white: '#FFFFFF',
       },
     },
   },

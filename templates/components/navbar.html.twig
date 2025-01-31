@@ -1,36 +1,51 @@
-<nav class="nav-links fixed z-50 top-0 left-0 w-full bg-black bg-opacity-75 p-6 shadow-lg backdrop-filter backdrop-blur-lg border border-opacity-18 border-white" style="box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37); -webkit-backdrop-filter: blur(2.5px); backdrop-filter: blur(2.5px); border-radius: 10px;">
+<nav class="nav-links fixed z-50 top-0 left-0 w-full bg-white p-4 shadow-md navbar">
   <div class="container mx-auto flex justify-between items-center">
-    <a href="/" class="text-white text-3xl font-bold hover:text-gold">CnK Couture</a>
-    
-    <!-- Menu pour desktop -->
-    <ul class="nav-links-desktop hidden md:flex space-x-6 text-lg">
-      <li><a href="#" class="text-white hover:text-gold">Histoire CnK</a></li>
-      <li><a href="{{ path('app_produit_location') }}" class="text-white hover:text-gold">Location</a></li>
-      <li><a href="{{ path('app_produit_liquidation') }}" class="text-white hover:text-gold">Liquidation</a></li>
-    </ul>
-    
-    <!-- Bouton hamburger pour mobile -->
-    <div class="md:hidden">
-      <ion-icon id="menu-toggle" name="menu" class="text-3xl cursor-pointer text-white"></ion-icon>
+    <!-- Réseaux sociaux à gauche -->
+    <div class="flex items-center space-x-4">
+      <a href="#" class="text-black custom-hover"><i class="fab fa-instagram text-xl"></i></a>
+      <a href="#" class="text-black custom-hover"><i class="fab fa-tiktok text-xl"></i></a>
+      <a href="#" class="text-black custom-hover"><i class="fab fa-snapchat text-xl"></i></a>
+      <a href="mailto:contact@exemple.com" class="text-black custom-hover"><i class="fas fa-envelope text-xl"></i></a>
     </div>
+
+    <!-- Menu principal avec logo centré -->
+    <div class="hidden md:flex items-center space-x-6">
+      <a href="#" class="text-black font-medium custom-hover text-sm">Histoire CnK</a>
+      <a href="{{ path('app_produit_location') }}" class="text-black font-medium custom-hover text-sm">Location</a>
+      
+      <!-- Logo centré -->
+      <a href="/" class="mx-4">
+        <img src="{{ asset('images/logo_cnk.webp') }}" alt="CnK Couture Logo" class="h-20 w-auto">
+      </a>
+      
+      <a href="{{ path('app_produit_liquidation') }}" class="text-black font-medium custom-hover text-sm">Liquidation</a>
+      <a href="{{ path('app_distance') }}" class="text-black font-medium custom-hover text-sm">Location à distance</a>
+    </div>
+
+    <!-- Bouton Rendez-vous à droite -->
+    <div class="flex items-center">
+      <a href="{{ path('app_appointment') }}" class="gradient-text">Rendez-vous</a>
+    </div>
+
+    <!-- Bouton pour le menu mobile à droite -->
+    <button id="menu-toggle" name="menu" class="menu-toggle-button block md:hidden">
+      <i class="fas fa-bars"></i>
+    </button>
   </div>
-  
-  <!-- Menu mobile -->
-  <div id="mobile-menu" class="hidden mt-4 w-full">
-    <ul class="flex flex-col space-y-4 items-center w-9/12 mx-auto">
-      <li><a href="#" class="text-white hover:text-gold block border-b border-white">Histoire CnK</a></li>
-      <li><a href="{{ path('app_produit_location') }}" class="text-white hover:text-gold block border-b border-white">Location</a></li>
-      <li><a href="{{ path('app_produit_liquidation') }}" class="text-white hover:text-gold block border-b border-white">Liquidation</a></li>
-    </ul>
+
+    <!-- Menu mobile (caché par défaut) -->
+  <div id="mobile-menu" class="hidden fixed top-0 right-0 w-64 bg-white bg-opacity-80 backdrop-blur-lg p-4">
+    <div class="flex justify-end">
+      <button id="close-menu" class="text-black">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    <div class="flex flex-col items-start space-y-4 mt-4">
+      <a href="#" class="text-black font-medium custom-hover text-sm">Histoire CnK</a>
+      <a href="{{ path('app_produit_location') }}" class="text-black font-medium custom-hover text-sm">Location</a>
+      <a href="{{ path('app_produit_liquidation') }}" class="text-black font-medium custom-hover text-sm">Liquidation</a>
+      <a href="{{ path('app_distance') }}" class="text-black font-medium custom-hover text-sm">Location à distance</a>
+    </div>
   </div>
 </nav>
 
-<script>
-  const menuToggle = document.getElementById('menu-toggle');
-  const mobileMenu = document.getElementById('mobile-menu');
-
-  menuToggle.addEventListener('click', function() {
-    mobileMenu.classList.toggle('hidden');
-    this.name = this.name === 'menu' ? 'close' : 'menu';
-  });
-</script>

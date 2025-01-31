@@ -1,0 +1,30 @@
+{# {% extends 'base.html.twig' %}
+
+{% block title %}Avis Client{% endblock %}
+
+{% block body %}
+    <div class="container mx-auto py-8">
+        <h1 class="text-3xl font-bold mb-6">Détail de l'Avis Client</h1>
+
+        <div class="bg-white shadow-md rounded-lg overflow-hidden">
+            <table class="min-w-full">
+                <tbody>
+                    <tr class="border-b border-gray-200">
+                        <th class="py-3 px-6 bg-gray-200 text-left text-gray-600 uppercase text-sm">Prénom</th>
+                        <td class="py-3 px-6 text-left">{{ avis_client.prenom }}</td>
+                    </tr>
+                    <tr class="border-b border-gray-200">
+                        <th class="py-3 px-6 bg-gray-200 text-left text-gray-600 uppercase text-sm">Commentaire</th>
+                        <td class="py-3 px-6 text-left">{{ avis_client.commentaire }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="mt-6 flex space-x-4">
+            <a href="{{ path('app_avis_client_index') }}" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">Retour à la liste</a>
+            <a href="{{ path('app_avis_client_edit', {'id': avis_client.id}) }}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Modifier</a>
+            {{ include('avis_client/_delete_form.html.twig') }}
+        </div>
+    </div>
+{% endblock %} #}

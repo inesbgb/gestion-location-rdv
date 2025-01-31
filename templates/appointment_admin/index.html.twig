@@ -33,7 +33,6 @@
             <table class="min-w-full table-auto">
                 <thead class="bg-gray-50">
                     <tr>
-                        <th class="py-3 px-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Id</th>
                         <th class="py-3 px-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date du RDV</th>
                         <th class="py-3 px-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Heure du RDV</th>
                         <th class="py-3 px-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Statut</th>
@@ -50,9 +49,8 @@
                 <tbody class="bg-white divide-y divide-gray-200">
                 {% for rendez_vou in rendez_vou %}
                     <tr class="hover:bg-gray-50">
-                        <td class="py-4 px-4 whitespace-nowrap">{{ rendez_vou.id }}</td>
-                        <td class="py-4 px-4 whitespace-nowrap">{{ rendez_vou.dateRdv ? rendez_vou.dateRdv|date('Y-m-d H:i:s') : '' }}</td>
-                        <td class="py-4 px-4 whitespace-nowrap">{{ rendez_vou.heureRdv ? rendez_vou.heureRdv|date('H:i:s') : '' }}</td>
+                        <td class="py-4 px-4 whitespace-nowrap">{{ rendez_vou.dateRdv ? rendez_vou.dateRdv|date('Y-m-d ') : '' }}</td>
+                        <td class="py-4 px-4 whitespace-nowrap">{{ rendez_vou.heureRdv ? rendez_vou.heureRdv|date('H:i') : '' }}</td>
                         <td class="py-4 px-4 whitespace-nowrap">
                             <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full {{ rendez_vou.statut ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
                                 {{ rendez_vou.statut ? 'Oui' : 'Non' }}
@@ -63,7 +61,7 @@
                         <td class="py-4 px-4 whitespace-nowrap">{{ rendez_vou.prenom }}</td>
                         <td class="py-4 px-4 whitespace-nowrap">{{ rendez_vou.nom }}</td>
                         <td class="py-4 px-4 whitespace-nowrap">{{ rendez_vou.tel }}</td>
-                        <td class="py-4 px-4 whitespace-nowrap">{{ rendez_vou.dateEvenemnt ? rendez_vou.dateEvenemnt|date('Y-m-d H:i:s') : '' }}</td>
+                        <td class="py-4 px-4 whitespace-nowrap">{{ rendez_vou.dateEvenemnt ? rendez_vou.dateEvenemnt|date('Y-m-d') : '' }}</td>
                         <td class="py-4 px-4 whitespace-nowrap">{{ rendez_vou.typeEvenement }}</td>
                         <td class="py-4 px-4 whitespace-nowrap text-sm font-medium">
                             <a href="{{ path('app_appointment_admin_show', {'id': rendez_vou.id}) }}" class="text-blue-600 hover:text-blue-900 mr-3">Voir</a>

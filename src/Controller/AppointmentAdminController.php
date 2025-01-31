@@ -7,6 +7,7 @@ use App\Entity\RendezVous;
 use App\Form\RendezVous1Type;
 use App\Service\EmailService;
 use App\Repository\JourRepository;
+use App\Repository\HoraireRepository;
 use App\Controller\AdminBaseController;
 use App\Repository\RendezVousRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -49,24 +50,36 @@ public function index(Request $request, RendezVousRepository $rendezVousReposito
     ]);
     }
 
-    #[Route('/admin/appointment/new', name: 'app_appointment_admin_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager, JourRepository $jourRepo, EmailService $emailService): Response
+    #[Route('/new', name: 'app_appointment_admin_new', methods: ['GET', 'POST'])]
+    public function new(Request $request, EntityManagerInterface $entityManager, JourRepository $jourRepo, EmailService $emailService, RendezVousRepository $rendezVousRepository, HoraireRepository $horaireRepository): Response
     {
         $rendezVou = new RendezVous();
-        $form = $this->createForm(RendezVous1Type::class, $rendezVou);
+    
+        // Récupérer tous les créneaux horaires possibles depuis la table Horaire
+        $allSlots = $horaireRepository->findAll();
+    
+        // Convertir les objets Horaire en un tableau de chaînes de créneaux horaires
+        $allSlotTimes = array_map(function ($horaire) {
+            return $horaire->getSlot()->format('H:i:s');
+        }, $allSlots);
+    
+        // Utiliser la méthode du repository pour obtenir les créneaux disponibles
+        $availableSlots = $rendezVousRepository->findAvailableSlots(new \DateTime(), $allSlotTimes);
+    
+        // Passer les créneaux disponibles au formulaire
+        $form = $this->createForm(RendezVous1Type::class, $rendezVou, [
+            'available_slots' => $availableSlots,
+        ]);
+    
         $form->handleRequest($request);
     
         if ($form->isSubmitted() && $form->isValid()) {
-            // Définir le statut à "confirmé" (true)
             $rendezVou->setStatut(true);
-    
-            // Générer un numéro de rendez-vous unique
             $rendezVou->setNumRdv($this->generateUniqueNumRdv($entityManager));
     
             $entityManager->persist($rendezVou);
             $entityManager->flush();
     
-            // Envoyer l'email de confirmation
             $emailService->sendConfirmationEmail(
                 $rendezVou->getEmail(),
                 'Confirmation de votre rendez-vous',
@@ -78,41 +91,46 @@ public function index(Request $request, RendezVousRepository $rendezVousReposito
             return $this->redirectToRoute('app_appointment_admin_index', [], Response::HTTP_SEE_OTHER);
         }
     
-        // Récupérer les rendez-vous existants
-        $existingAppointments = $entityManager->getRepository(RendezVous::class)->findAll();
-        $openDaysEntities = $jourRepo->findOpenDays();
-        $openDays = [];
-        foreach ($openDaysEntities as $jour) {
-            $openDays[] = $jour->getLibelle();
-        }
-        
+        $openDays = $this->getOpenDays($jourRepo);
+    
         return $this->render('appointment_admin/new.html.twig', [
             'rendez_vou' => $rendezVou,
             'form' => $form,
-            'existingAppointments' => $existingAppointments,
-            "openDays" => $openDays
+            'openDays' => $openDays,
+            'availableSlots' => $availableSlots
         ]);
     }
+        private function getOpenDays(JourRepository $jourRepo): array
+        {
+            $openDaysEntities = $jourRepo->findOpenDays();
+            $openDays = [];
+            foreach ($openDaysEntities as $jour) {
+                $openDays[] = $jour->getLibelle();
+            }
+            return $openDays;
+        
 
-private function generateUniqueNumRdv(EntityManagerInterface $entityManager): int
-{
-    do {
-        $numRdv = random_int(100000, 999999);
-        $existingRdv = $entityManager->getRepository(RendezVous::class)->findOneBy(['num_rdv' => $numRdv]);
-    } while ($existingRdv !== null);
+    }
+        private function generateUniqueNumRdv(EntityManagerInterface $entityManager): string
+    {
+        // Logique pour générer un numéro de rendez-vous unique
+        do {
+            $numRdv = uniqid('rdv_', true);
+            $existingRdv = $entityManager->getRepository(RendezVous::class)->findOneBy(['numRdv' => $numRdv]);
+        } while ($existingRdv !== null);
 
-    return $numRdv;
-}
+        return $numRdv;
+    }
 
    
 
-    #[Route('/{id}', name: 'app_appointment_admin_show', methods: ['GET'])]
-    public function show(RendezVous $rendezVou): Response
-    {
-        return $this->render('appointment_admin/show.html.twig', [
-            'rendez_vou' => $rendezVou,
-        ]);
-    }
+#[Route('/{id}', name: 'app_appointment_admin_show', methods: ['GET'])]
+public function show(RendezVous $rendezVou): Response
+{
+    return $this->render('appointment_admin/show.html.twig', [
+        'rendez_vou' => $rendezVou,
+    ]);
+}
 
     #[Route('/{id}/edit', name: 'app_appointment_admin_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, RendezVous $rendezVou, EntityManagerInterface $entityManager, EmailService $emailService, 
@@ -152,32 +170,30 @@ private function generateUniqueNumRdv(EntityManagerInterface $entityManager): in
         'openDays' => $openDays
     ]);
 }
-#[Route('/available-hours/{date}', name: 'app_available_hours', methods: ['GET'])]
-public function getAvailableHours(string $date, EntityManagerInterface $entityManager): JsonResponse
+#[Route('/available-hours', name: 'app_available_hours', methods: ['GET'])]
+public function getAvailableHours(Request $request, RendezVousRepository $rendezVousRepository, HoraireRepository $horaireRepository): JsonResponse
 {
- 
+    // Récupérer la date depuis la requête
+    $dateString = $request->query->get('date');
+    $dateTime = \DateTime::createFromFormat('Y-m-d', $dateString);
 
-    $existingAppointments = $entityManager->getRepository(RendezVous::class)->findBy(['date_rdv' => new \DateTime($date)]);
-    
-   
-    $allHours = range(10, 19);
-    $takenHours = [];
-    foreach ($existingAppointments as $appointment) {
-        $takenHours[] = (int)$appointment->getHeureRdv()->format('H');
+    // Vérifier si la date est valide
+    if (!$dateTime || $dateTime->format('Y-m-d') !== $dateString) {
+        return new JsonResponse(['error' => 'Invalid date format'], Response::HTTP_BAD_REQUEST);
     }
 
+    // Récupérer tous les créneaux horaires possibles depuis la table Horaire
+    $allSlots = $horaireRepository->findAll();
 
+    // Convertir les objets Horaire en un tableau de chaînes de créneaux horaires
+    $allSlotTimes = array_map(function ($horaire) {
+        return $horaire->getSlot()->format('H:i:s');
+    }, $allSlots);
 
-    $availableHours = array_diff($allHours, $takenHours);
+    // Utiliser la méthode du repository pour obtenir les créneaux disponibles
+    $availableSlots = $rendezVousRepository->findAvailableSlots($dateTime, $allSlotTimes);
 
- 
-
-    // Assurez-vous d'avoir cette ligne à la fin pour voir tous les dumps
-    dd($availableHours);
-
-    return new JsonResponse([
-        'availableHours' => array_values($availableHours)
-    ]);
+    return new JsonResponse(array_values($availableSlots));
 }
     #[Route('/{id}', name: 'app_appointment_admin_delete', methods: ['POST'])]
     public function delete(Request $request, RendezVous $rendezVou, EntityManagerInterface $entityManager, EmailService $emailService): Response

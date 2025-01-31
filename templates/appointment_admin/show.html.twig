@@ -9,17 +9,14 @@
 
             <table class="min-w-full bg-white border border-gray-200">
                 <tbody>
-                    <tr class="border-t">
-                        <th class="px-4 py-2 text-left text-gray-600">Id</th>
-                        <td class="px-4 py-2">{{ rendez_vou.id }}</td>
-                    </tr>
+
                     <tr class="border-t">
                         <th class="px-4 py-2 text-left text-gray-600">Date rdv</th>
-                        <td class="px-4 py-2">{{ rendez_vou.dateRdv ? rendez_vou.dateRdv|date('Y-m-d H:i:s') : '' }}</td>
+                        <td class="px-4 py-2">{{ rendez_vou.dateRdv ? rendez_vou.dateRdv|date('Y-m-d') : '' }}</td>
                     </tr>
                     <tr class="border-t">
                         <th class="px-4 py-2 text-left text-gray-600">Heure rdv</th>
-                        <td class="px-4 py-2">{{ rendez_vou.heureRdv ? rendez_vou.heureRdv|date('H:i:s') : '' }}</td>
+                        <td class="px-4 py-2">{{ rendez_vou.heureRdv ? rendez_vou.heureRdv|date('H:i') : '' }}</td>
                     </tr>
                     <tr class="border-t">
                         <th class="px-4 py-2 text-left text-gray-600">Statut</th>
@@ -47,7 +44,7 @@
                     </tr>
                     <tr class="border-t">
                         <th class="px-4 py-2 text-left text-gray-600">Date evenement</th>
-                        <td class="px-4 py-2">{{ rendez_vou.dateEvenemnt ? rendez_vou.dateEvenemnt|date('Y-m-d H:i:s') : '' }}</td>
+                        <td class="px-4 py-2">{{ rendez_vou.dateEvenemnt ? rendez_vou.dateEvenemnt|date('Y-m-d') : '' }}</td>
                     </tr>
                     <tr class="border-t">
                         <th class="px-4 py-2 text-left text-gray-600">Type evenement</th>

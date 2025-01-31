@@ -6,7 +6,7 @@
 <div class="container mx-auto px-4 py-8">
     <h1 class="text-2xl md:text-3xl font-bold mb-6 text-center">Gestion des éléments</h1>
 
-    <div class="space-y-6">
+   <div class="space-y-6">
         {% for element_admin in element_admins %}
             <div class="bg-white shadow-md rounded-lg overflow-hidden">
                 <div class="px-4 py-5 sm:px-6 bg-gray-50">
@@ -16,17 +16,18 @@
                 </div>
                 <div class="border-t border-gray-200">
                     <dl>
-                        <div class="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                         <div class="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                             <dt class="text-sm font-medium text-gray-500">
-                                Image principale
+                                Vidéo
                             </dt>
                             <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                                {% if element_admin.mainImage %}
-                                    <img src="{{ asset('uploads/' ~ element_admin.mainImage) }}" alt="Image principale" class="w-24 h-24 object-cover rounded">
+                                {% if element_admin.videoFilename %}
+                                    <video width="320" height="240" controls>
+                                        <source src="{{ asset('uploads/videos/' ~ element_admin.videoFilename) }}" type="video/mp4">
+                                        Votre navigateur ne supporte pas la vidéo.
+                                    </video>
                                 {% else %}
-                                    <div class="w-24 h-24 bg-gray-200 flex items-center justify-center rounded">
-                                        <span class="text-gray-500 text-xs">Aucune image principale</span>
-                                    </div>
+                                    <span class="text-gray-500">Aucune vidéo</span>
                                 {% endif %}
                             </dd>
                         </div>
@@ -36,10 +37,12 @@
                             </dt>
                             <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
                                 <div class="flex flex-wrap gap-2">
-                                    {% for i in 1..3 %}
-                                        {% set carouselImage = attribute(element_admin, 'carouselImage' ~ i) %}
-                                        {% if carouselImage %}
-                                            <img src="{{ asset('uploads/' ~ carouselImage) }}" alt="Carousel Image {{ i }}" class="w-24 h-24 object-cover rounded">
+                                    {% for i in 1..6 %}  {# Modifié de 3 à 6 #}
+                                        {% set produit = attribute(element_admin, 'carouselImage' ~ i) %}
+                                        {% if produit and produit.getImageName is not empty %}
+                                            <img src="{{ asset('images/produit/' ~ produit.getImageName) }}" 
+                                                 alt="Carousel Image {{ i }}" 
+                                                 class="w-24 h-24 object-cover rounded">
                                         {% else %}
                                             <div class="w-24 h-24 bg-gray-200 flex items-center justify-center rounded">
                                                 <span class="text-gray-500 text-xs">Image {{ i }}</span>

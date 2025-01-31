@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Annuler rendez-vous{% endblock %}
+
+{% block stylesheets %}
+<style>
+    /* Enlever les flèches des champs de type number */
+    .no-arrows::-webkit-outer-spin-button,
+    .no-arrows::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+    .no-arrows {
+        -moz-appearance: textfield;
+    }
+    /* Entourer la case de saisie en noir */
+    .border-black {
+        border: 2px solid black;
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="flex items-start justify-center min-h-screen bg-gray-100 py-8">
+    <div class="w-full max-w-lg bg-white p-8 rounded-lg shadow-md">
+        <h1 class="text-3xl font-bold mb-6 text-center">Annuler rendez-vous</h1>
+        {{ form_start(form) }}
+            <div class="mb-4">
+                {{ form_label(form.numRdv) }}
+                {{ form_widget(form.numRdv, {'attr': {'class': 'no-arrows border-black'}}) }}
+            </div>
+            <input type="hidden" name="_csrf_token" value="{{ csrf_token('annuler_rdv') }}">
+            <button type="submit" class="w-full bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-lg transform transition-transform duration-300 hover:scale-110">
+                Annuler le rendez-vous
+            </button>
+        {{ form_end(form) }}
+    </div>
+</div>
+{% endblock %}

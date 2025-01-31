@@ -1,0 +1,40 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Avis Client Index{% endblock %}
+
+{% block body %}
+    <div class="container mx-auto py-8">
+        <h1 class="text-3xl font-bold mb-6">Mes Avis Clients</h1>
+
+        <div class="overflow-x-auto">
+            <table class="min-w-full bg-white shadow-md rounded-lg">
+                <thead>
+                    <tr class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
+                        <th class="py-3 px-6 text-left">Prénom</th>
+                        <th class="py-3 px-6 text-left">Commentaire</th>
+                        <th class="py-3 px-6 text-center">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="text-gray-700 text-sm font-light">
+                {% for avis_client in avis_clients %}
+                    <tr class="border-b border-gray-200 hover:bg-gray-100">
+                        <td class="py-3 px-6 text-left whitespace-nowrap">{{ avis_client.prenom }}</td>
+                        <td class="py-3 px-6 text-left">{{ avis_client.commentaire }}</td>
+                        <td class="py-3 px-6 text-center">
+                            <a href="{{ path('app_avis_client_edit', {'id': avis_client.id}) }}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Modifier</a>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="3" class="py-3 px-6 text-center">Aucun enregistrement trouvé</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="mt-6">
+            <a href="{{ path('app_avis_client_new') }}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Ajouter un avis</a>
+        </div>
+    </div>
+{% endblock %}

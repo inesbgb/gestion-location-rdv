@@ -3,7 +3,8 @@
 {% block title %}Produits en Liquidation{% endblock %}
 
 {% block body %}
-    <h1 class="text-2xl font-bold mb-4">Produits en Liquidation</h1>
+    <div class="container mx-auto px-4 pt-24 sm:pt-24 mt-10 mb-12">
+        <h1 class="text-3xl font-bold mb-8 text-center ">Liquidation</h1>
 
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {% for produit in produits %}
@@ -19,9 +20,10 @@
                 </div>
             </div>
         {% else %}
-            <div class="col-span-1 md:col-span-2 lg:col-span-3">
-                <p class="text-center text-gray-500">Aucun produit en liquidation trouvé</p>
+            <div class="flex justify-center items-center h-64 col-span-1 md:col-span-2 lg:col-span-3">
+                <p class="text-center text-gray-500">Aucun produit en liquidation pour le moment</p>
             </div>
         {% endfor %}
+    </div>
     </div>
 {% endblock %}

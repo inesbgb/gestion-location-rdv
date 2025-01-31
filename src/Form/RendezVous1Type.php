@@ -6,6 +6,7 @@ namespace App\Form;
 use App\Entity\RendezVous;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -23,23 +24,27 @@ class RendezVous1Type extends AbstractType
         ->add('date_rdv', DateType::class, [
             'widget' => 'single_text',
             'label' => 'Date du rendez-vous',
-            'html5' => false,
             'attr' => [
-                'min' => (new \DateTime())->format('Y-m-d'),
+                'id' => 'rendez_vous_date_rdv', 
             ],
-            'constraints' => [
+                            'constraints' => [
+                new NotBlank([
+                    'message' => 'La date du rendez-vous est obligatoire.',
+                ]),
                 new GreaterThanOrEqual([
-                    'value' => new \DateTime(),
+                    'value' => (new \DateTime())->format('Y-m-d'),
                     'message' => 'La date du rendez-vous ne peut pas être antérieure à aujourd\'hui.',
                 ]),
             ],
         ])
-        ->add('heure_rdv', TimeType::class, [
-            'widget' => 'choice',
-            'label' => 'Heure du rendez-vous',
-            'hours' => range(10, 19), 
-            'minutes' => [0],
-            'attr' => ['class' => 'heure-rdv-select']
+        ->add('heure_rdv', ChoiceType::class, [
+            'choices' => array_combine($options['available_slots'], $options['available_slots']),
+            'placeholder' => 'Choisissez une heure',
+            'attr' => [
+                'id' => 'rendez_vous_heure_rdv', 
+            ],
+            'required' => true,
+            'mapped' => false,
         ])
         ->add('statut', ChoiceType::class, [
             'label' => 'Statut',
@@ -95,5 +100,6 @@ class RendezVous1Type extends AbstractType
         $resolver->setDefaults([
             'data_class' => RendezVous::class,
         ]);
+        $resolver->setDefined('available_slots');
     }
 }

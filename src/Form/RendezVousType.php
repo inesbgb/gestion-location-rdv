@@ -23,6 +23,9 @@ class RendezVousType extends AbstractType
             ->add('date_rdv', DateType::class, [
                 'widget' => 'single_text',
                 'label' => 'Date du rendez-vous',
+                'attr' => [
+                    'id' => 'rendez_vous_date_rdv', 
+                ],
                                 'constraints' => [
                     new NotBlank([
                         'message' => 'La date du rendez-vous est obligatoire.',
@@ -34,8 +37,11 @@ class RendezVousType extends AbstractType
                 ],
             ])
             ->add('heure_rdv', ChoiceType::class, [
-                'choices' => [],
+                'choices' => array_combine($options['available_slots'], $options['available_slots']),
                 'placeholder' => 'Choisissez une heure',
+                'attr' => [
+                    'id' => 'rendez_vous_heure_rdv', 
+                ],
                 'required' => true,
                 'mapped' => false,
             ])
@@ -107,5 +113,6 @@ class RendezVousType extends AbstractType
         $resolver->setDefaults([
             'data_class' => RendezVous::class,
         ]);
+        $resolver->setDefined('available_slots');
     }
 }

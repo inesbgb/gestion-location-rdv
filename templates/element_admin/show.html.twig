@@ -12,8 +12,17 @@
                 <td>{{ element_admin.id }}</td>
             </tr>
             <tr>
-                <th>Video</th>
-                <td>{{ element_admin.video }}</td>
+                <th>Vidéo</th>
+                <td>
+                    {% if element_admin.videoFilename %}
+                        <video width="320" height="240" controls>
+                            <source src="{{ asset('uploads/videos/' ~ element_admin.videoFilename) }}" type="video/mp4">
+                            Votre navigateur ne supporte pas la vidéo.
+                        </video>
+                    {% else %}
+                        <span class="text-gray-500">Aucune vidéo</span>
+                    {% endif %}
+                </td>
             </tr>
             <tr>
                 <th>CarouselImage1</th>
@@ -26,6 +35,18 @@
             <tr>
                 <th>CarouselImage3</th>
                 <td>{{ element_admin.carouselImage3 }}</td>
+            </tr>
+            <tr>
+                <th>CarouselImage4</th>
+                <td>{{ element_admin.carouselImage4 }}</td>
+            </tr>
+            <tr>
+                <th>CarouselImage5</th>
+                <td>{{ element_admin.carouselImage5 }}</td>
+            </tr>
+            <tr>
+                <th>CarouselImage6</th>
+                <td>{{ element_admin.carouselImage6 }}</td>
             </tr>
             <tr>
                 <th>ImageHistoire</th>

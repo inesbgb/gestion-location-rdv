@@ -1,0 +1,33 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Ajouter un avis{% endblock %}
+
+{% block body %}
+    <div class="container mx-auto py-8">
+        <h1 class="text-3xl font-bold mb-6">Ajouter un Avis</h1>
+
+        <div class="bg-white shadow-md rounded-lg p-6">
+            {{ form_start(form) }}
+            <div class="mb-4">
+                {{ form_label(form.prenom, 'Prénom', {'label_attr': {'class': 'block text-gray-700 text-sm font-bold mb-2'}}) }}
+                {{ form_widget(form.prenom, {'attr': {'class': 'shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline'}}) }}
+                {{ form_errors(form.prenom) }}
+            </div>
+            <div class="mb-4">
+                {{ form_label(form.commentaire, 'Commentaire', {'label_attr': {'class': 'block text-gray-700 text-sm font-bold mb-2'}}) }}
+                {{ form_widget(form.commentaire, {'attr': {'class': 'shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline', 'rows': '5'}}) }}
+                {{ form_errors(form.commentaire) }}
+            </div>
+            <div class="flex items-center justify-between">
+                <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="submit">
+                    Ajouter
+                </button>
+            </div>
+            {{ form_end(form) }}
+        </div>
+
+        <div class="mt-6">
+            <a href="{{ path('app_avis_client_index') }}" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">Retour à la liste</a>
+        </div>
+    </div>
+{% endblock %}

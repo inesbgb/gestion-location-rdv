@@ -13,16 +13,16 @@
             {{ form_row(form.prenom, {'attr': {'class': 'w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500'}}) }}
             {{ form_row(form.nom, {'attr': {'class': 'w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500'}}) }}
             {{ form_row(form.tel, {'attr': {'class': 'w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500'}}) }}
-            {{ form_row(form.date_rdv, {'attr': {'class': 'w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500', 'id': 'date_rdv'}}) }}
+            {{ form_row(form.date_rdv, {'attr': {'class': 'w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500', 'id': 'rendez_vous_date_rdv'}}) }}
             {{ form_row(form.heure_rdv, {
                 'attr': {
                     'class': 'w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500',
                     'id': 'rendez_vous_heure_rdv'
                 }
             }) }}
-            <button type="submit" class="w-full bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded-lg transform transition-transform duration-300 hover:scale-110">
-                Envoyer
-            </button>
+            <button type="submit" class="gradient-button">
+    Envoyer
+</button>
       
             <p class="mt-4">
                 <a href="{{ path('rendezvous_annuler') }}" class="text-blue-500 hover:underline">Annuler un rendez-vous</a>
@@ -47,11 +47,10 @@
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
 
-    <script>
-  document.addEventListener('DOMContentLoaded', function() {
+<script>
+document.addEventListener('DOMContentLoaded', function() {
     const joursOuverts = {{ openDays|json_encode|raw }};
-       console.log('Jours Ouverts:', joursOuverts);
-   
+    console.log('Jours Ouverts:', joursOuverts);
 
     function getDatesForOpenDays(openDays) {
         const today = new Date();
@@ -85,17 +84,17 @@
         dateFormat: "Y-m-d",
         enable: enabledDates,
         onChange: function(selectedDates, dateStr, instance) {
-            fetch('/check-availability?date=' + dateStr)
+            fetch('/rendezvous/available-slots?date=' + dateStr)
                 .then(response => response.json())
                 .then(data => {
                     console.log('Heures disponibles:', data);
-                    const heureRdvSelect = document.getElementById('rendez_vous_heure_rdv');
+                    const heureRdvSelect = document.getElementById('rendez_vous_heure_rdv'); 
                     heureRdvSelect.innerHTML = '<option value="">Choisissez une heure</option>';
 
                     data.forEach(function(time) {
                         const option = document.createElement('option');
                         option.value = time;
-                        option.textContent = time + 'h';
+                        option.textContent = time;
                         heureRdvSelect.appendChild(option);
                     });
                 })
