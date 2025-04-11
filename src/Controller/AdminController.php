@@ -10,7 +10,7 @@ use Symfony\Component\Routing\Attribute\Route;
 use App\Controller\AdminBaseController;
 
 #[Route('/admin')]
-class AdminController extends AdminBaseController
+class AdminController extends AdminBaseController // Changez ici pour utiliser AdminBaseController
 {
     #[Route('/', name: 'app_admin')]
     public function index(
@@ -18,6 +18,8 @@ class AdminController extends AdminBaseController
         ClientRepository $clientRepo,
         ReservationRepository $reservationRepo
     ): Response {
+        // Ajoutons un dd() temporaire pour tester
+        dd('Route admin atteinte');
         $currentMonth = new \DateTime('first day of this month');
         $monthStart = $currentMonth->format('Y-m-01');
         $monthEnd = $currentMonth->format('Y-m-t');

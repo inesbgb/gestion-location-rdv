@@ -1,14 +1,14 @@
 <nav class="nav-links fixed z-50 top-0 left-0 w-full bg-white p-4 shadow-md navbar">
   <div class="container mx-auto flex justify-between items-center">
-    <!-- Réseaux sociaux à gauche -->
-    <div class="flex items-center space-x-4">
+    <!-- Réseaux sociaux à gauche - visible uniquement sur desktop -->
+    <div class="hidden md:flex items-center space-x-4">
       <a href="#" class="text-black custom-hover"><i class="fab fa-instagram text-xl"></i></a>
       <a href="#" class="text-black custom-hover"><i class="fab fa-tiktok text-xl"></i></a>
       <a href="#" class="text-black custom-hover"><i class="fab fa-snapchat text-xl"></i></a>
       <a href="mailto:contact@exemple.com" class="text-black custom-hover"><i class="fas fa-envelope text-xl"></i></a>
     </div>
 
-    <!-- Menu principal avec logo centré -->
+    <!-- Menu principal avec logo centré - visible sur desktop -->
     <div class="hidden md:flex items-center space-x-6">
       <a href="#" class="text-black font-medium custom-hover text-sm">Histoire CnK</a>
       <a href="{{ path('app_produit_location') }}" class="text-black font-medium custom-hover text-sm">Location</a>
@@ -19,22 +19,34 @@
       </a>
       
       <a href="{{ path('app_produit_liquidation') }}" class="text-black font-medium custom-hover text-sm">Liquidation</a>
-      <a href="{{ path('app_distance') }}" class="text-black font-medium custom-hover text-sm">Location à distance</a>
+      <a href="{{ path('accueil_visiteur') }}" class="text-black font-medium custom-hover text-sm">Acceuil</a>
     </div>
 
-    <!-- Bouton Rendez-vous à droite -->
-    <div class="flex items-center">
-      <a href="{{ path('app_appointment') }}" class="gradient-text">Rendez-vous</a>
+    <!-- Logo pour mobile - aligné à gauche -->
+    <div class="md:hidden">
+      <a href="/">
+        <img src="{{ asset('images/logo_cnk.webp') }}" alt="CnK Couture Logo" class="h-20 w-auto">
+      </a>
     </div>
 
-    <!-- Bouton pour le menu mobile à droite -->
+    <!-- Bouton Rendez-vous - visible sur desktop -->
+    <div class="hidden md:flex items-center ml-4">
+      <a href="{{ path('app_appointment') }}" 
+         class="bg-gold-gradient text-white font-bold px-6 py-3 rounded-lg
+                hover:scale-110 transform transition-transform duration-300
+                shadow-md hover:shadow-lg">
+        Rendez-vous
+      </a>
+    </div>
+
+    <!-- Bouton pour le menu mobile -->
     <button id="menu-toggle" name="menu" class="menu-toggle-button block md:hidden">
       <i class="fas fa-bars"></i>
     </button>
   </div>
 
-    <!-- Menu mobile (caché par défaut) -->
-  <div id="mobile-menu" class="hidden fixed top-0 right-0 w-64 bg-white bg-opacity-80 backdrop-blur-lg p-4">
+  <!-- Menu mobile reste inchangé -->
+  <div id="mobile-menu" class="hidden fixed top-0 right-0 w-64 bg-white bg-opacity-80 backdrop-blur-lg p-4 h-full">
     <div class="flex justify-end">
       <button id="close-menu" class="text-black">
         <i class="fas fa-times"></i>
@@ -44,8 +56,14 @@
       <a href="#" class="text-black font-medium custom-hover text-sm">Histoire CnK</a>
       <a href="{{ path('app_produit_location') }}" class="text-black font-medium custom-hover text-sm">Location</a>
       <a href="{{ path('app_produit_liquidation') }}" class="text-black font-medium custom-hover text-sm">Liquidation</a>
-      <a href="{{ path('app_distance') }}" class="text-black font-medium custom-hover text-sm">Location à distance</a>
+      <a href="{{ path('accueil_visiteur') }}" class="text-black font-medium custom-hover text-sm">Acceuil</a>
+      <!-- Bouton Rendez-vous dans le menu mobile -->
+      <a href="{{ path('app_appointment') }}" 
+         class="bg-gold-gradient text-white font-bold px-6 py-3 rounded-lg
+                hover:scale-110 transform transition-transform duration-300
+                shadow-md hover:shadow-lg w-full text-center mt-4">
+        Rendez-vous
+      </a>
     </div>
   </div>
 </nav>
-

@@ -1,68 +1,61 @@
-<footer class="bg-black text-white  mt-auto bg-light">
-    <div class="container-footer"> <!-- Ajout de max-w-7xl et px-4 -->
-                    <!-- La boutique -->
-            <div class="bloc footer-contact">
-    <h3>Contact</h3>
-    <p>
-        <a href="https://www.google.com/maps/search/?api=1&query=54+Rue+du+Dauphiné+69003+Lyon" target="_blank" class="contact-link custom-hover ">
-            54 Rue du Dauphiné 69003 Lyon
-        </a>
-    </p>
-    <p>
-        <a href="tel:+33123456789" class="contact-link custom-hover">
-            Tél : 01 23 45 67 89
-        </a>
-    </p>
-    <p>
-        <a href="https://www.google.com/search?q=CNK+Couture+Lyon" target="_blank" class="contact-link custom-hover">
-            Horaires : Lundi - Samedi : 10h - 20h
-        </a>
-    </p>
-</div>
-           
-           
-        <!-- Réseaux sociaux -->
-           <div class="bloc footer-reseaux">
-                <h3>Nos Réseaux</h3>
-                <ul class="liste-reseaux">
-                    <li>
-                        <a href="https://www.instagram.com/votrecompte" target="_blank" class="social-link custom-hover">
-                            <img src="/images/icon/instagram-icon.png" alt="Instagram" class="social-icon">
+<footer class="bg-black text-white mt-auto">
+    <div class="container mx-auto px-4 py-8">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+            <!-- Contact -->
+            <div class="footer-section text-center">
+                <h3 class="text-xl font-bold mb-4">Contact</h3>
+                <div class="space-y-3">
+                    <p>
+                        <a href="https://www.google.com/maps/search/?api=1&query=54+Rue+du+Dauphiné+69003+Lyon" 
+                           target="_blank" 
+                           class="custom-hover hover:text-gold transition-colors">
+                            54 Rue du Dauphiné 69003 Lyon
                         </a>
-                    </li>
-                    <li>
-                        <a href="https://www.tiktok.com/@cnkcouture" target="_blank" class="social-link custom-hover">
-                            <img src="/images/icon/tiktok-icon.png" alt="TikTok" class="social-icon">
+                    </p>
+                    <p>
+                        <a href="tel:+33123456789" 
+                           class="custom-hover hover:text-gold transition-colors">
+                            Tél : 01 23 45 67 89
                         </a>
-                    </li>
-                    <li>
-                        <a href="https://www.snapchat.com/add/votrecompte" target="_blank" class="social-link custom-hover">
-                            <img src="/images/icon/snapchat-icon.png" alt="Snapchat" class="social-icon">
+                    </p>
+                    <p>
+                        <a href="https://www.google.com/search?q=CNK+Couture+Lyon" 
+                           target="_blank" 
+                           class="custom-hover hover:text-gold transition-colors">
+                            Horaires : Lundi - Samedi : 10h - 20h
                         </a>
-                    </li>
-                     <li>
-                        <a href="mailto:contact@cnk-couture.fr" class="social-link custom-hover">
-                            <img src="/images/icon/email-icon.png" alt="Email" class="social-icon">
-                         </a>
-                     </li>
-                </ul>
+                    </p>
+                </div>
             </div>
 
-        
-        
+            <!-- Réseaux sociaux -->
+            <div class="footer-section text-center">
+                <h3 class="text-xl font-bold mb-4">Suivez-nous</h3>
+                <div class="flex justify-center space-x-8">
+                    <a href="#" class="text-3xl custom-hover hover:text-gold transition-colors">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    <a href="#" class="text-3xl custom-hover hover:text-gold transition-colors">
+                        <i class="fab fa-tiktok"></i>
+                    </a>
+                    <a href="#" class="text-3xl custom-hover hover:text-gold transition-colors">
+                        <i class="fab fa-snapchat"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
     </div>
-<div class="foot-page text-center py-4">
-    <div class="footer-liens-centres flex justify-center space-x-4 mb-4">
-        <a href="{{ path('app_mentions_legales') }}" class="custom-hover hover:underline">Mentions Légales</a>
-        <span>|</span>
-        <a href="{{ path('app_conditions_vente') }}" class="custom-hover hover:underline">Conditions de Vente</a>
+
+    <!-- Pied de page -->
+    <div class="border-t border-gray-800">
+        <div class="container mx-auto px-4 py-6">
+            <div class="flex flex-col md:flex-row justify-center items-center space-y-4 md:space-y-0 md:space-x-4">
+                <a href="{{ path('app_mentions_legales') }}" class="custom-hover hover:text-gold transition-colors">Mentions Légales</a>
+                <span class="text-gray-500">|</span>
+                <a href="{{ path('app_conditions_vente') }}" class="custom-hover hover:text-gold transition-colors">Conditions de Vente</a>
+                <span class="text-gray-500 hidden md:inline">|</span>
+                <p class="text-sm text-gray-400">&copy; {{ "now"|date("Y") }} CNK Couture. Tous droits réservés.</p>
+            </div>
+        </div>
     </div>
-    <p class="copyright border-t border-gray-200 pt-6">&copy; {{ "now"|date("Y") }} CNK Couture. Tous droits réservés.</p>
-</div>
 </footer>
-<style>
-
-
-
-
-</style>

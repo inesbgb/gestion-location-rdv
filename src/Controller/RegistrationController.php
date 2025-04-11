@@ -18,29 +18,35 @@ class RegistrationController extends AbstractController
     #[Route('/register', name: 'app_register')]
     public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, Security $security, EntityManagerInterface $entityManager): Response
     {
-        $user = new User();
-        $form = $this->createForm(RegistrationFormType::class, $user);
-        $form->handleRequest($request);
+        // Vérifier s'il existe déjà des utilisateurs admin
+        $existingAdmins = $entityManager->getRepository(User::class)->count(['roles' => '["ROLE_ADMIN"]']);
+        
+        // Si c'est le premier admin, permettre la création
+        if ($existingAdmins === 0) {
+            $user = new User();
+            $form = $this->createForm(RegistrationFormType::class, $user);
+            $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-         
-            $user->setPassword(
-                $userPasswordHasher->hashPassword(
-                    $user,
-                    $form->get('plainPassword')->getData()
-                )
-            );
-            $user->setRoles(["ROLE_ADMIN"]);
+            if ($form->isSubmitted() && $form->isValid()) {
+                $user->setPassword(
+                    $userPasswordHasher->hashPassword(
+                        $user,
+                        $form->get('plainPassword')->getData()
+                    )
+                );
+                $user->setRoles(["ROLE_ADMIN"]);
 
-            $entityManager->persist($user);
-            $entityManager->flush();
+                $entityManager->persist($user);
+                $entityManager->flush();
 
+                return $security->login($user, AppCustomAuthenticator::class, 'main');
+            }
 
-            return $security->login($user, AppCustomAuthenticator::class, 'main');
+            return $this->render('registration/register.html.twig', [
+                'registrationForm' => $form,
+            ]);
         }
 
-        return $this->render('registration/register.html.twig', [
-            'registrationForm' => $form,
-        ]);
+        throw $this->createAccessDeniedException('Un administrateur existe déjà');
     }
 }

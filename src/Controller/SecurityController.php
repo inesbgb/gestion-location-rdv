@@ -9,14 +9,10 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 class SecurityController extends AbstractController
 {
-    #[Route(path: '/login', name: 'app_login')]
-public function login(AuthenticationUtils $authenticationUtils): Response
-{
-    // Rediriger l'admin déjà connecté vers le dashboard admin
-    if ($this->isGranted('ROLE_ADMIN')) {
-        return $this->redirectToRoute('app_admin');
-    }
-
+    #[Route('/login', name: 'app_login', methods: ['GET', 'POST'])]
+    public function login(AuthenticationUtils $authenticationUtils): Response
+    {
+        
     $error = $authenticationUtils->getLastAuthenticationError();
     $lastUsername = $authenticationUtils->getLastUsername();
 
@@ -27,7 +23,7 @@ public function login(AuthenticationUtils $authenticationUtils): Response
     ]);
 }
 
-    #[Route(path: '/admin/logout', name: 'app_logout')]
+#[Route('/logout', name: 'app_logout', methods: ['GET'])]
     public function logout(): void
     {
         
